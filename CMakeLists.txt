@@ -2,11 +2,11 @@
 cmake_minimum_required(VERSION 3.23)
 project(multithreaded-http-server)
 
-
-# TODO: Set the C++ version to be used
-
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # TODO: Set the libraries for the project (parser, response, router, etc.)
+
 
 
 # TODO: Link the executable with the libraries

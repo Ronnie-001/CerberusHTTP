@@ -1,3 +1,0 @@
-#ifndef DEBUG
-
-#endif // !DEBUG
