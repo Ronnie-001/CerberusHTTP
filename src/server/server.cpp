@@ -17,7 +17,6 @@ private:
     struct addrinfo* _ptr;
 
 public:
-    
     // Constructor
     Server() {}
     
