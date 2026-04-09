@@ -102,8 +102,10 @@ int main()
 
         // Create a buffer to read the data into
         char buffer[1024];
+
         
         //  Create a child process
+        //  TODO: To be removed
         pid_t pid = fork();
         if (pid == 0) {
             close(sockfd);
