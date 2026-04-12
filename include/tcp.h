@@ -3,7 +3,7 @@
 
 #include <netdb.h>
 
-class Server {
+class TcpListener {
 
 private:
     int _status;
@@ -23,10 +23,10 @@ private:
 
 public:
     // Constructor
-    Server();
+    TcpListener();
     
     // Destructor
-    ~Server();
+    ~TcpListener();
     
     /*
      * Gets a list of server addresses to connect on using getaddrinfo() and 
