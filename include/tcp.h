@@ -13,7 +13,6 @@ namespace cerberus
 {
     class TcpListener 
     {
-
         private:
             int _status;
 

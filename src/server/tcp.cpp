@@ -26,6 +26,7 @@
 
 cerberus::TcpListener::TcpListener() : _server_running(false) 
 {
+    // prevent the writing process from being terminated in the case of a closed socket.
     signal(SIGPIPE, SIG_IGN);
 
     // Look for IPv4 or IPv6.
@@ -163,10 +164,6 @@ void cerberus::TcpListener::listenForConnections()
                 std::string data = readData(fd);
                 parser->appendData(data); 
 
-//                std::cout << "-------------[TESTING]----------------" << '\n';
-//                cerberus::string::printRawCharacters(data);
-//                std::cout << "-------------[TESTING]----------------" << '\n';
-
                 if (parser->isRequestComplete()) {
 
                     parseHttpRequest(parser);
@@ -258,7 +255,6 @@ std::string cerberus::TcpListener::readData(const int fd)
 //        std::cout << data;
 //        std::cout << "--------------------------------" << '\n';
     }
-
     return data;
 }
 
@@ -274,7 +270,7 @@ void cerberus::TcpListener::parseHttpRequest(cerberus::HttpParser* parser)
 void cerberus::TcpListener::sendResponse(const int& fd) 
 {
     // std::string message = "HTTP/1.1 200 OK\r\nContent-Length: 30\r\nConnection: close\r\n\r\n[SERVER] This is the response!";
-    std::string message = "HTTP/1.1 200 OK\r\nContent-Length: 30\r\n\r\n[SERVER] This is the response!";
+    std::string message = "HTTP/1.1 200 OK\r\nContent-Length: 30\r\n\r\n[SERVER] This is the test response.";
 
     std::size_t bytes_sent = send(fd, message.data(), message.size(), 0);
 
