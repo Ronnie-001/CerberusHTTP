@@ -1,5 +1,5 @@
 {
-  description = "C++ Multithreaded HTTP Server project.";
+  description = "CerberusHTTP: A Multithreaded HTTP/1.1 Server.";
     
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
