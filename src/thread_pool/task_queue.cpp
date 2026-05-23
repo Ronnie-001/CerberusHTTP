@@ -21,3 +21,8 @@ void cerberus::TaskQueue::createWorker(const cerberus::HttpParser& parser)
         handleRequest(request);
     }
 }
+
+// TODO: Implement the handleRequest method.
+void cerberus::TaskQueue::handleRequest(const Request& request) 
+{
+}
