@@ -10,16 +10,20 @@ namespace cerberus
     class TaskQueue 
     {
         private:
-            std::queue<cerberus::HttpParser*> requests_queue;
+            std::queue<cerberus::HttpParser*> _requests_queue;
 
-            std::condition_variable cv;
-            std::mutex mutex;
+            std::condition_variable _cv;
+            std::mutex _mutex;
+            int _number_of_running_tasks;
 
         public:
 
             TaskQueue();
+            TaskQueue(const TaskQueue& tq) = delete;
             
             void createWorker(const int fd);
+
+            void handleRequest(const Request& request);
     };
 }
 
