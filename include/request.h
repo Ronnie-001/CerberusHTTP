@@ -19,11 +19,13 @@ namespace cerberus
 
         // message body
         std::optional<std::unordered_map<std::string, std::string>> body;
+
     };
 }
 
     /*
      * Friend function of the HttpParser class, which acts as a 'pretty printer' for 
+
      * the constructed Request struct.
      */
     std::ostream& operator<<(std::ostream& out, const cerberus::Request& request); 

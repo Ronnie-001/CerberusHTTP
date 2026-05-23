@@ -50,6 +50,7 @@ std::string cerberus::HttpParser::getMethod() const { return _method; }
 std::string cerberus::HttpParser::getResourcePath() const { return _resource_path; }
 std::string cerberus::HttpParser::getVersion() const { return _version; }
 std::string cerberus::HttpParser::getRequest() const { return _request; }
+cerberus::Request cerberus::HttpParser::getCompletedRequest() const { return _parsed_request; }
 
 void cerberus::HttpParser::appendData(const char* buffer, int bytes)
 {

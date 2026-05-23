@@ -50,6 +50,8 @@ namespace cerberus
         std::string getResourcePath() const;
         std::string getVersion() const;
         std::string getRequest() const;
+
+        Request getCompletedRequest() const;
        
         /*
          * Used for appending data from the recv() system call
