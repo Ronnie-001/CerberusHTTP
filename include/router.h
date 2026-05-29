@@ -5,21 +5,21 @@
 
 class Router 
 {
-    private:
-        cerberus::Request _request;
+private:
+    cerberus::Request _request;
 
-    public:
+public:
 
-        Router(const cerberus::Request& request) : _request(request)
-        {}
-        
-        void checkStatusCode();
-            
-        bool identifyResource();
+    Router(const cerberus::Request& request) : _request(request)
+    {}
     
-        std::string getResource();
+    void checkStatusCode();
         
-        void routeRequest();
+    bool identifyResource();
+
+    std::string getResource();
+    
+    void routeRequest();
 };
 
 #endif // !ROUTER_H

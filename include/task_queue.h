@@ -7,23 +7,23 @@
 
 namespace cerberus 
 {
-    class TaskQueue 
-    {
-        private:
-            std::queue<cerberus::Request> _queue;
+class TaskQueue 
+{
+    private:
+        std::queue<cerberus::Request> _queue;
 
-            std::condition_variable _cv;
-            std::mutex _mutex;
-            int _number_of_running_tasks;
+        std::condition_variable _cv;
+        std::mutex _mutex;
+        int _number_of_running_tasks;
 
-        public:
-            // Constructors
-            TaskQueue();
-            
-            void createWorker(const cerberus::HttpParser& parser);
+    public:
+        // Constructors
+        TaskQueue();
+        
+        void createWorker(const cerberus::HttpParser& parser);
 
-            void handleRequest(const Request& request);
-    };
+        void handleRequest(const Request& request);
+};
 }
 
 #endif // !TASK_QUEUE_H
