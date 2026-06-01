@@ -22,9 +22,6 @@ struct Request
     std::optional<std::unordered_map<std::string, std::string>> body;
 
 };
-
-cerberus::HttpMethod getHttpMethod(const std::string& str);
-
 }
 
 // Pretty printer for the request struct.

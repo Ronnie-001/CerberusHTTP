@@ -173,7 +173,7 @@ void cerberus::HttpParser::parseMessageBody()
 std::ostream& operator<<(std::ostream& out, const cerberus::Request& request) 
 {
     out << "------------START LINE--------" << '\n';
-    out << "METHOD: " << request.method << '\n';
+    out << "METHOD: " << cerberus::getHttpMethodString(request.method) << '\n';
     out << "RESOURCE PATH: " << request.resourcePath << '\n';
     out << "VERSION: " << request.version << '\n';
     
@@ -200,27 +200,12 @@ std::ostream& operator<<(std::ostream& out, const cerberus::Request& request)
     return out;
 }
 
-cerberus::HttpMethod cerberus::getHttpMethod(const std::string &str)
-{
-    if (str == "GET") return cerberus::HttpMethod::GET;
-    if (str == "PUT") return cerberus::HttpMethod::GET;
-    if (str == "POST") return cerberus::HttpMethod::GET;
-    if (str == "DELETE") return cerberus::HttpMethod::GET;
-    if (str == "PATCH") return cerberus::HttpMethod::GET;
-    if (str == "OPTIONS") return cerberus::HttpMethod::GET;
-    if (str == "HEAD") return cerberus::HttpMethod::GET;
-    if (str == "CONNECT") return cerberus::HttpMethod::GET;
-    if (str == "TRACE") return cerberus::HttpMethod::GET;
-
-    return cerberus::HttpMethod::NOT_PROVIDED;
-}
-
 cerberus::Request cerberus::HttpParser::constructRequest() 
 {
     Request req;
 
     // init member variables 
-    req.method = _method;
+    req.method = getHttpMethod(_method);
     req.resourcePath = _resource_path;
     req.version = _version;
 

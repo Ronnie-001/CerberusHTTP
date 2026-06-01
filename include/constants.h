@@ -1,9 +1,11 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <string>
+
 namespace cerberus
 {
-enum class HttpMethod
+enum class HttpMethod 
 {
     GET,
     PUT,
@@ -18,6 +20,36 @@ enum class HttpMethod
     // Used in case no HTTP method is provided.
     NOT_PROVIDED
 };
+
+inline std::string getHttpMethodString(cerberus::HttpMethod method)
+{
+    if (method == cerberus::HttpMethod::GET) return "GET";
+    if (method == cerberus::HttpMethod::PUT) return "PUT";
+    if (method == cerberus::HttpMethod::POST) return "POST";
+    if (method == cerberus::HttpMethod::DELETE) return "DELETE";
+    if (method == cerberus::HttpMethod::PATCH) return "PATCH";
+    if (method == cerberus::HttpMethod::OPTIONS) return "OPTIONS";
+    if (method == cerberus::HttpMethod::HEAD) return "HEAD";
+    if (method == cerberus::HttpMethod::CONNECT) return "CONNECT";
+    if (method == cerberus::HttpMethod::TRACE) return "TRACE";
+    
+    return "NOT PROVIDED";
+}
+
+inline cerberus::HttpMethod getHttpMethod(const std::string &str)
+{
+    if (str == "GET") return cerberus::HttpMethod::GET;
+    if (str == "PUT") return cerberus::HttpMethod::PUT;
+    if (str == "POST") return cerberus::HttpMethod::POST;
+    if (str == "DELETE") return cerberus::HttpMethod::DELETE;
+    if (str == "PATCH") return cerberus::HttpMethod::PATCH;
+    if (str == "OPTIONS") return cerberus::HttpMethod::OPTIONS;
+    if (str == "HEAD") return cerberus::HttpMethod::HEAD;
+    if (str == "CONNECT") return cerberus::HttpMethod::CONNECT;
+    if (str == "TRACE") return cerberus::HttpMethod::TRACE;
+
+    return cerberus::HttpMethod::NOT_PROVIDED;
+}
 
 enum class HttpStatus
 {

@@ -55,8 +55,6 @@ public:
     // Used for parsing each individual field from the extracted message body 
     void parseMessageBody();
 
-    cerberus::HttpMethod getHttpMethod();
-
     // Function used to create the pasersed HTTP request.
     Request constructRequest();
 
