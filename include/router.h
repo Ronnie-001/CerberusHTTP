@@ -9,8 +9,6 @@ public:
     Router(const cerberus::Request& request) : _request(request)
     {}
     
-    void checkStatusCode();
-        
     bool identifyResource();
 
     std::string getResource();
