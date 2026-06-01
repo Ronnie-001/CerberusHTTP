@@ -5,11 +5,7 @@
 
 class Router 
 {
-private:
-    cerberus::Request _request;
-
 public:
-
     Router(const cerberus::Request& request) : _request(request)
     {}
     
@@ -20,6 +16,9 @@ public:
     std::string getResource();
     
     void routeRequest();
+
+private:
+    cerberus::Request _request;
 };
 
 #endif // !ROUTER_H

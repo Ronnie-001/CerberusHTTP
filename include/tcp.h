@@ -13,33 +13,6 @@ namespace cerberus
 {
 class TcpListener 
 {
-private:
-    int _status;
-
-    // Member variables to hold the socket file descriptors.
-    int _sock_fd;
-    int _bind_fd;
-    int _listen_fd;
-
-    struct addrinfo _hints;
-    struct addrinfo* _servinfo;
-    struct addrinfo* _ptr;
-
-    bool _server_running;
-    struct sockaddr_storage _received_connection; 
-
-    // epoll
-    int _epoll_fd;
-    struct epoll_event _ev; // the current events
-    struct epoll_event _events[MAX_EVENTS]; // holds all events
-                                            //
-    /*
-     * Map used for ownsership; it stores each HTTP parser with each TCP connection.
-     * This way, when handling things such as packet switching, we can append
-     * incoming data with thier correct parser.
-     */
-    std::unordered_map<int, std::unique_ptr<cerberus::HttpParser>> _parsers;
-
 public:
     // Constructor
     TcpListener();
@@ -78,6 +51,35 @@ public:
     void parseHttpRequest(cerberus::HttpParser* parser);
 
     void sendResponse(const int& _conn_fd);
+
+private:
+    int _status;
+
+    // Member variables to hold the socket file descriptors.
+    int _sock_fd;
+    int _bind_fd;
+    int _listen_fd;
+
+    struct addrinfo _hints;
+    struct addrinfo* _servinfo;
+    struct addrinfo* _ptr;
+
+    bool _server_running;
+    struct sockaddr_storage _received_connection; 
+
+    // epoll
+    int _epoll_fd;
+    struct epoll_event _ev; // the current events
+    struct epoll_event _events[MAX_EVENTS]; // holds all events
+                                            //
+    /*
+     * Map used for ownsership; it stores each HTTP parser with each TCP connection.
+     * This way, when handling things such as packet switching, we can append
+     * incoming data with thier correct parser.
+     */
+    std::unordered_map<int, std::unique_ptr<cerberus::HttpParser>> _parsers;
+
+
 };
 }
 

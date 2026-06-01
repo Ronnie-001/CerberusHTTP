@@ -11,29 +11,6 @@ namespace cerberus
 // Used for parsing incoming HTTP requests accepter from the TCP listener.
 class HttpParser 
 {
-private:
-    // Used to check if the entire HTTP request has been recieved.
-    bool _complete;
-    // The fd of the socket that we are connected to.
-    int _conn_fd;
-    std::string _request;
-
-    std::string _extracted_start_line;
-    std::string _method;
-    std::string _resource_path;
-    std::string _version;
-   
-    // Headers
-    std::string _extracted_headers;
-    std::unordered_map<std::string, std::string> _headers;
-
-    // Message body
-    std::string _extracted_message_body;
-    std::unordered_map<std::string, std::string> _message_body;
-
-    // The final request to be constructed.
-    Request _parsed_request;
-
 public:
     // Constructor(s)
     HttpParser();
@@ -79,6 +56,29 @@ public:
 
     // Function used to create the pasersed HTTP request.
     Request constructRequest();
+
+private:
+    // Used to check if the entire HTTP request has been recieved.
+    bool _complete;
+    // The fd of the socket that we are connected to.
+    int _conn_fd;
+    std::string _request;
+
+    std::string _extracted_start_line;
+    std::string _method;
+    std::string _resource_path;
+    std::string _version;
+   
+    // Headers
+    std::string _extracted_headers;
+    std::unordered_map<std::string, std::string> _headers;
+
+    // Message body
+    std::string _extracted_message_body;
+    std::unordered_map<std::string, std::string> _message_body;
+
+    // The final request to be constructed.
+    Request _parsed_request;
 };
 }
 

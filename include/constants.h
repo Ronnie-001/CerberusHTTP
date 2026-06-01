@@ -3,7 +3,6 @@
 
 namespace cerberus
 {
-
 enum class HttpMethod
 {
     GET,
@@ -16,7 +15,6 @@ enum class HttpMethod
     CONNECT,
     TRACE
 };
-
 
 enum class HttpStatus
 {
