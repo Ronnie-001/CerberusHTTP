@@ -2,6 +2,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "constants.h"
 #include "m_strings.h"
 
 #include "parser.h"
@@ -197,6 +198,21 @@ std::ostream& operator<<(std::ostream& out, const cerberus::Request& request)
     }
 
     return out;
+}
+
+cerberus::HttpMethod cerberus::getHttpMethod(const std::string &str)
+{
+    if (str == "GET") return cerberus::HttpMethod::GET;
+    if (str == "PUT") return cerberus::HttpMethod::GET;
+    if (str == "POST") return cerberus::HttpMethod::GET;
+    if (str == "DELETE") return cerberus::HttpMethod::GET;
+    if (str == "PATCH") return cerberus::HttpMethod::GET;
+    if (str == "OPTIONS") return cerberus::HttpMethod::GET;
+    if (str == "HEAD") return cerberus::HttpMethod::GET;
+    if (str == "CONNECT") return cerberus::HttpMethod::GET;
+    if (str == "TRACE") return cerberus::HttpMethod::GET;
+
+    return cerberus::HttpMethod::NOT_PROVIDED;
 }
 
 cerberus::Request cerberus::HttpParser::constructRequest() 

@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <string>
+#include "constants.h"
 #include "request.h"
 
 #define BUFFER 1024
@@ -48,11 +49,13 @@ public:
     void extractHeaders();
     // Used for getting the headers of the HTTP request
     void parseHeaders();
-        
+         
     // Used for getting the JSON message body from the HTTP request.
     void extractMessageBody();
     // Used for parsing each individual field from the extracted message body 
     void parseMessageBody();
+
+    cerberus::HttpMethod getHttpMethod();
 
     // Function used to create the pasersed HTTP request.
     Request constructRequest();

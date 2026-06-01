@@ -13,7 +13,10 @@ enum class HttpMethod
     OPTIONS,
     HEAD,
     CONNECT,
-    TRACE
+    TRACE,
+
+    // Used in case no HTTP method is provided.
+    NOT_PROVIDED
 };
 
 enum class HttpStatus

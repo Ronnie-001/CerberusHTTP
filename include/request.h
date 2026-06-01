@@ -1,6 +1,7 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 
+#include "constants.h"
 #include <string>
 #include <unordered_map>
 #include <optional>
@@ -10,7 +11,7 @@ namespace cerberus
 struct Request 
 {
     // Start line
-    std::string method;
+    cerberus::HttpMethod method;
     std::string resourcePath;
     std::string version; 
 
@@ -21,13 +22,12 @@ struct Request
     std::optional<std::unordered_map<std::string, std::string>> body;
 
 };
+
+cerberus::HttpMethod getHttpMethod(const std::string& str);
+
 }
 
-/*
- * Friend function of the HttpParser class, which acts as a 'pretty printer' for 
-
- * the constructed Request struct.
- */
+// Pretty printer for the request struct.
 std::ostream& operator<<(std::ostream& out, const cerberus::Request& request); 
 
 
