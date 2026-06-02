@@ -21,7 +21,7 @@ enum class HttpMethod
     NOT_PROVIDED
 };
 
-inline std::string getHttpMethodString(cerberus::HttpMethod method)
+constexpr std::string getHttpMethodString(cerberus::HttpMethod method)
 {
     if (method == cerberus::HttpMethod::GET) return "GET";
     if (method == cerberus::HttpMethod::PUT) return "PUT";
@@ -36,7 +36,7 @@ inline std::string getHttpMethodString(cerberus::HttpMethod method)
     return "NOT PROVIDED";
 }
 
-inline cerberus::HttpMethod getHttpMethod(const std::string &str)
+constexpr cerberus::HttpMethod getHttpMethod(const std::string &str)
 {
     if (str == "GET") return cerberus::HttpMethod::GET;
     if (str == "PUT") return cerberus::HttpMethod::PUT;
