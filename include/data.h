@@ -1,0 +1,25 @@
+#ifndef DATA_H
+#define DATA_H
+
+#include <string>
+
+namespace cerberus
+{
+class Data
+{
+public:
+    Data(std::string_view file_path);
+    
+    // Note: made return type void for now; subject to change.
+    void addUser();
+
+    void updateUser();
+
+    void deleteUser();
+
+private:
+    std::string _file_path;
+};
+}
+
+#endif // !DATA_H

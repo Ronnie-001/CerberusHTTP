@@ -14,12 +14,20 @@ public:
     
     // Checks if the resource actually exists on the server.
     bool verifyResource();
+    
+    // Functions for handling different HTTP methods.
+    void getResource();
+    
+    void handleGetRequest();
 
-    std::string getResource();
+    void handlePutRequest();
+
+    void handlePostRequest();
+
+    void handleDeleteRequest();
 
 private:
     cerberus::Request _request;
-    
 };
 }
 

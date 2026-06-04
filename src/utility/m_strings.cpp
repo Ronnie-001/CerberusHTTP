@@ -12,12 +12,11 @@ namespace cerberus
             auto it = std::search(str1.begin(), str1.end(),
                                   str2.begin(), str2.end(),
                                 
-                                    // Comparison function 
-                                    [](const char a, const char b) {
-                                        return std::tolower(a) == std::tolower(b);
-                                    }
-
-                                 );
+                // Comparison function 
+                [](const char a, const char b) {
+                    return std::tolower(a) == std::tolower(b);
+                }
+            );
             
             if (it != str1.end()) {
                 return std::distance(str1.begin(), it);

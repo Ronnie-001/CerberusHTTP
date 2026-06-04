@@ -20,7 +20,6 @@ struct Request
 
     // message body
     std::optional<std::unordered_map<std::string, std::string>> body;
-
 };
 }
 

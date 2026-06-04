@@ -1,30 +1,38 @@
-#include "router.h"
 #include <stdexcept>
 
+#include "router.h"
+#include "constants.h"
+
+
 cerberus::Router::Router(const cerberus::Request& request) : _request(request) 
-{}
+{
+    // TODO: validate the HTTP request path during construction.
+}
 
 void cerberus::Router::checkHttpMethod()
 {
-    if (_request.method == cerberus::HttpMethod::NOT_PROVIDED) {
-        throw std::invalid_argument("HTTP method not provided.");
+    switch (_request.method) {
+        case cerberus::HttpMethod::GET: 
+            handleGetRequest();
+        case cerberus::HttpMethod::PUT: 
+            handlePutRequest();
+        case cerberus::HttpMethod::POST: 
+            handlePostRequest();
+        case cerberus::HttpMethod::DELETE: 
+            handleDeleteRequest();
+        default:
+            throw std::invalid_argument("[ERROR] Error routing request: HTTP Method not provided.");
+            break;
     }
-    
-    if (_request.method == cerberus::HttpMethod::GET) {}
-
-    if (_request.method == cerberus::HttpMethod::PUT) {}
-
-    if (_request.method == cerberus::HttpMethod::POST) {}
-
-    if (_request.method == cerberus::HttpMethod::DELETE) {}
-
-    if (_request.method == cerberus::HttpMethod::PATCH) {}
-
-    if (_request.method == cerberus::HttpMethod::OPTIONS) {}
-
-    if (_request.method == cerberus::HttpMethod::HEAD) {}
-
-    if (_request.method == cerberus::HttpMethod::CONNECT) {}
-
-    if (_request.method == cerberus::HttpMethod::TRACE) {}
 }
+
+void cerberus::Router::handleGetRequest() 
+{
+
+}
+
+void cerberus::Router::handlePutRequest() {}
+
+void cerberus::Router::handlePostRequest() {}
+
+void cerberus::Router::handleDeleteRequest() {}
