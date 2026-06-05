@@ -1,3 +1,5 @@
+#include <filesystem>
+#include <iostream>
 #include <stdexcept>
 
 #include "router.h"
@@ -8,6 +10,9 @@ cerberus::Router::Router() {}
 
 void cerberus::Router::checkHttpMethod(const cerberus::Request& request) 
 {
+    // Validate the resource that is trying to be accessed first.    
+    if (!verifyResource(request.resourcePath)) throw std::invalid_argument("[ERROR] Requested resource could not be found.");
+
     switch (request.method) {
         case cerberus::HttpMethod::GET:
             handleGetRequest(request.resourcePath);
@@ -22,7 +27,23 @@ void cerberus::Router::checkHttpMethod(const cerberus::Request& request)
     }
 }
 
-void cerberus::Router::handleGetRequest(std::string_view path) {}
+bool cerberus::Router::verifyResource(std::string_view path) 
+{ 
+    std::filesystem::path p = path;
+    std::filesystem::file_status status = std::filesystem::status(p);
+
+    if (!std::filesystem::status_known(status)) {
+        std::cerr << "[ERROR] Unkown file status.";
+        return false;
+    }
+
+    return std::filesystem::exists(path);
+}
+
+void cerberus::Router::handleGetRequest(std::string_view path) 
+{
+
+}
 
 void cerberus::Router::handlePutRequest(std::string_view path) {}
 

@@ -14,7 +14,7 @@ public:
     void checkHttpMethod(const cerberus::Request& request);
     
     // Checks if the resource actually exists on the server.
-    bool verifyResource();
+    bool verifyResource(std::string_view path);
     
     // Functions for handling different HTTP methods.
     void getResource();
