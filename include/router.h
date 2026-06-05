@@ -2,15 +2,16 @@
 #define ROUTER_H
 
 #include "request.h"
+#include <string_view>
 
 namespace cerberus 
 {
 class Router 
 {
 public:
-    Router(const cerberus::Request& request);
+    Router();
     
-    void checkHttpMethod();
+    void checkHttpMethod(const cerberus::Request& request);
     
     // Checks if the resource actually exists on the server.
     bool verifyResource();
@@ -18,16 +19,13 @@ public:
     // Functions for handling different HTTP methods.
     void getResource();
     
-    void handleGetRequest();
+    void handleGetRequest(std::string_view path);
 
-    void handlePutRequest();
+    void handlePutRequest(std::string_view path);
 
-    void handlePostRequest();
+    void handlePostRequest(std::string_view path);
 
-    void handleDeleteRequest();
-
-private:
-    cerberus::Request _request;
+    void handleDeleteRequest(std::string_view path);
 };
 }
 

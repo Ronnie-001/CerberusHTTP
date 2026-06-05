@@ -2,37 +2,30 @@
 
 #include "router.h"
 #include "constants.h"
+#include "request.h"
 
+cerberus::Router::Router() {}
 
-cerberus::Router::Router(const cerberus::Request& request) : _request(request) 
+void cerberus::Router::checkHttpMethod(const cerberus::Request& request) 
 {
-    // TODO: validate the HTTP request path during construction.
-}
-
-void cerberus::Router::checkHttpMethod()
-{
-    switch (_request.method) {
-        case cerberus::HttpMethod::GET: 
-            handleGetRequest();
-        case cerberus::HttpMethod::PUT: 
-            handlePutRequest();
-        case cerberus::HttpMethod::POST: 
-            handlePostRequest();
-        case cerberus::HttpMethod::DELETE: 
-            handleDeleteRequest();
+    switch (request.method) {
+        case cerberus::HttpMethod::GET:
+            handleGetRequest(request.resourcePath);
+        case cerberus::HttpMethod::PUT:
+            handlePutRequest(request.resourcePath);
+        case cerberus::HttpMethod::POST:
+            handlePostRequest(request.resourcePath);
+        case cerberus::HttpMethod::DELETE:
+            handleDeleteRequest(request.resourcePath);
         default:
-            throw std::invalid_argument("[ERROR] Error routing request: HTTP Method not provided.");
-            break;
+            throw std::invalid_argument("[ERROR] No HTTP method provided."); 
     }
 }
 
-void cerberus::Router::handleGetRequest() 
-{
+void cerberus::Router::handleGetRequest(std::string_view path) {}
 
-}
+void cerberus::Router::handlePutRequest(std::string_view path) {}
 
-void cerberus::Router::handlePutRequest() {}
+void cerberus::Router::handlePostRequest(std::string_view path) {}
 
-void cerberus::Router::handlePostRequest() {}
-
-void cerberus::Router::handleDeleteRequest() {}
+void cerberus::Router::handleDeleteRequest(std::string_view path) {}

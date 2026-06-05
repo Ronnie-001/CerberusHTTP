@@ -173,8 +173,6 @@ void cerberus::TcpListener::listenForConnections()
                     metrics.countRequest();
                     sendResponse(fd);
                     
-                    // TODO: Pass request to queue to be processed by different threads.
-
                 } else {
                     continue;
                 }
