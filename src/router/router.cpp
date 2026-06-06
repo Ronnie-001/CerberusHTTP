@@ -44,7 +44,10 @@ void cerberus::Router::handleGetRequest(std::string_view path) {}
 
 void cerberus::Router::handlePutRequest(std::string_view path) 
 {
-
+    // Get the KV pairs from the message body.
+    // Use this to construct the User struct.
+    // use nlohmann libraray to convert it to JSON.
+    // Once you have the JSON, use std::ofstream to write to users.json.
 }
 
 void cerberus::Router::handlePostRequest(std::string_view path) {}

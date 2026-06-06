@@ -5,6 +5,14 @@
 
 namespace cerberus
 {
+
+// Represents each JSON entry.
+struct User
+{
+    std::string username;
+    std::string password;
+};
+
 class Data
 {
 public:
