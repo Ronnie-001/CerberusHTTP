@@ -31,21 +31,21 @@ bool cerberus::Router::verifyResource(std::string_view path)
 { 
     std::filesystem::path p = path;
     std::filesystem::file_status status = std::filesystem::status(p);
-
+    
     if (!std::filesystem::status_known(status)) {
-        std::cerr << "[ERROR] Unkown file status.";
+        std::cout << "[ERROR] Unkown file status.";
         return false;
     }
 
     return std::filesystem::exists(path);
 }
 
-void cerberus::Router::handleGetRequest(std::string_view path) 
+void cerberus::Router::handleGetRequest(std::string_view path) {}
+
+void cerberus::Router::handlePutRequest(std::string_view path) 
 {
 
 }
-
-void cerberus::Router::handlePutRequest(std::string_view path) {}
 
 void cerberus::Router::handlePostRequest(std::string_view path) {}
 
