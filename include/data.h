@@ -2,6 +2,7 @@
 #define DATA_H
 
 #include <string>
+#include <nlohmann/json.hpp>
 
 namespace cerberus
 {
@@ -19,11 +20,15 @@ public:
     Data(std::string_view file_path);
     
     // Note: made return type void for now; subject to change.
-    void addUser();
+    void addUser(const cerberus::User& user);
 
     void updateUser();
 
     void deleteUser();
+
+    void toJson(nlohmann::json& json, const User& user);
+
+    void fromJson(const nlohmann::json& json, User& user); 
 
 private:
     std::string _file_path;

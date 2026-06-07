@@ -3,7 +3,6 @@
 
 #include <unordered_map>
 #include <string>
-#include "constants.h"
 #include "request.h"
 
 #define BUFFER 1024
