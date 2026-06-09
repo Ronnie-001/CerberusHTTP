@@ -1,3 +1,4 @@
+#include <ios>
 #include <ostream>
 #include <sstream>
 #include <string>
@@ -19,7 +20,9 @@ cerberus::HttpParser::~HttpParser() { close(_conn_fd); }
 
 bool cerberus::HttpParser::isRequestComplete() 
 {
-    // Check if the recieved HTTP request has a message body
+    std::cout << "in the isRequestComplete() method" << '\n';
+
+    // Check if the recieved HT\nTP request has a message body
     int header = cerberus::string::caseInsensitiveSearch(_request, "content-length");
     int crlf = _request.find("\r\n\r\n");
         
@@ -27,8 +30,11 @@ bool cerberus::HttpParser::isRequestComplete()
     if (header == std::string::npos && crlf != std::string::npos) {
         _complete = true;
     } 
-
+    
+    // If there is a message body
     if (header != std::string::npos && crlf != std::string::npos) {
+        std::cout << "Checking if there is a message body!" << '\n';
+
         // grab the substring of the request, starting from \r\n\r\n,
         // then compare this to the content length.
         std::string message_body = _request.substr(crlf + 4);
@@ -39,10 +45,16 @@ bool cerberus::HttpParser::isRequestComplete()
 
         int number_of_bytes = std::stoi(number_of_bytes_str);
 
+        std::cout << "number of bytes: " << number_of_bytes << '\n';
+        std::cout << "message body length: " << message_body.length() << '\n';
+
         if (number_of_bytes == message_body.length()) {
             _complete = true;
         }
     }
+        
+    std::cout << std::boolalpha;
+    std::cout << _complete << '\n';
 
     return _complete;
 }

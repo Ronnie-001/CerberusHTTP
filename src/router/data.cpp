@@ -1,11 +1,13 @@
-#include "data.h"
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 #include <fstream>
 #include <iostream>
+
+#include "data.h"
 
 cerberus::Data::Data(std::string_view file_path) : _file_path(file_path) 
 {}
 
+// ../var/users.json
 void cerberus::Data::addUser(const cerberus::User& user) 
 {
     nlohmann::json user_json;
@@ -17,7 +19,7 @@ void cerberus::Data::addUser(const cerberus::User& user)
     
     // Read the data from the file
     nlohmann::json file_data;
-    std::ifstream infile(_file_path); 
+    std::ifstream infile(_file_path); // Takes in the relative file path
     if (infile.is_open()) {
         infile >> file_data; 
         infile.close();
