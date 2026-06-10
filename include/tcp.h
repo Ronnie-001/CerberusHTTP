@@ -5,6 +5,7 @@
 #include <memory>
 #include <netdb.h>
 #include <sys/epoll.h>
+#include <sys/socket.h>
 #include <unordered_map>
 
 #define MAX_EVENTS 15
@@ -14,6 +15,8 @@ namespace cerberus
 class TcpListener 
 {
 public:
+    using parser_map = std::unordered_map<int, std::unique_ptr<cerberus::HttpParser>>;
+
     // Constructor
     TcpListener();
 
@@ -36,7 +39,7 @@ public:
      * IPv4 or IPv6.
      * Returns the internet socket address of the received connection.
     */
-    void* getAddressFamily(const sockaddr_storage* recieved_connection);
+    static void* getAddressFamily(const sockaddr_storage* recieved_connection);
     
     // Used to create a new epoll instace in kernel space.
     void createEpollInstance();
@@ -45,7 +48,7 @@ public:
     int setNonBlocking(const int fd);
     
     // Function used to read in data from the recv system call.
-    std::string readData(const int _conn_fd);
+    static std::string readData(const int _conn_fd, const sockaddr_storage& recieved_connection, cerberus::TcpListener::parser_map& map);
     
     // Used to parse and extract the start line, and HTTP headers, and potential message body.
     void parseHttpRequest(cerberus::HttpParser* parser);
@@ -78,8 +81,6 @@ private:
      * incoming data with thier correct parser.
      */
     std::unordered_map<int, std::unique_ptr<cerberus::HttpParser>> _parsers;
-
-
 };
 }
 

@@ -127,7 +127,7 @@ void cerberus::TcpListener::listenForConnections()
         }
 
         auto requests_queue = std::make_unique<cerberus::TaskQueue>();
-        requests_queue->spinUpWorkerThreads(NUMBER_OF_THREADS);
+        requests_queue->spinUpWorkerThreads(10);
 
         // Loop through all of the READY file descriptors.
         for (int i = 0; i < nfds; ++i) {
@@ -169,7 +169,7 @@ void cerberus::TcpListener::listenForConnections()
             } else { // This is an existing socket, grab the associated parser through the file descriptor and append data.
                 cerberus::HttpParser* parser = _parsers[fd].get();
                 
-                std::string data = readData(fd);
+                std::string data = readData(fd, _received_connection, _parsers);
                 std::cout << data << '\n';
 
                 parser->appendData(data); 
@@ -234,13 +234,13 @@ int cerberus::TcpListener::setNonBlocking(const int fd)
     return 0;
 }
 
-std::string cerberus::TcpListener::readData(const int fd)
+std::string cerberus::TcpListener::readData(const int fd, const sockaddr_storage& recieved_connection, parser_map& map)
 {
     // Read in the incoming request data.
     char ip_address[INET6_ADDRSTRLEN];
     socklen_t request_size = sizeof(ip_address);
 
-    inet_ntop(_received_connection.ss_family, getAddressFamily(&_received_connection), ip_address, request_size);
+    inet_ntop(recieved_connection.ss_family, getAddressFamily(&recieved_connection), ip_address, request_size);
     // std::cout << "[SERVER] IP address: " << ip_address << '\n';
 
     // buffer to read the data into.
@@ -258,7 +258,7 @@ std::string cerberus::TcpListener::readData(const int fd)
 
         // Check if the client disconnects.
         if (nread == 0) {
-            _parsers.erase(fd);
+            map.erase(fd);
             break;
         }
 

@@ -78,7 +78,7 @@ private:
     std::unordered_map<std::string, std::string> _message_body;
 
     // The final request to be constructed.
-    Request _parsed_request;
+    cerberus::Request _parsed_request;
 };
 }
 

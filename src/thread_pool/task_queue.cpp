@@ -1,4 +1,3 @@
-#include <iostream>
 #include <mutex>
 #include <thread>
 #include <unordered_map>
