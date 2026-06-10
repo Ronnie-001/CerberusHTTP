@@ -4,7 +4,9 @@
 #include "parser.h"
 #include "request.h"
 #include <condition_variable>
+#include <memory>
 #include <queue>
+#include <unordered_map>
 
 #define NUM_OF_THREADS 10
 
@@ -13,13 +15,15 @@ namespace cerberus
 class TaskQueue 
 {
 public:
+    using parser_map = std::unordered_map<int, std::unique_ptr<cerberus::HttpParser>>;
+
     // Constructors
     TaskQueue();
         
     void addToRequestQueue(const cerberus::Request& request);    
     void addToFdQueue(const int fd);
 
-    void createWorker();
+    void createWorker(cerberus::TaskQueue::parser_map map);
 
     void spinUpWorkerThreads(const int number_of_threads);
 
@@ -28,11 +32,12 @@ public:
 private:
     std::queue<cerberus::Request> _request_queue;
     std::mutex _request_mutex;
+    std::condition_variable _request_cv;
 
     std::queue<int> _fd_queue;
     std::mutex _fd_mutex;
+    std::condition_variable _fd_cv;
 
-    std::condition_variable _cv;
     int _active_threads;
 };
 }

@@ -1,7 +1,10 @@
+#include <iostream>
 #include <mutex>
 #include <thread>
+#include <unordered_map>
 
 #include "task_queue.h"
+#include "tcp.h"
 
 cerberus::TaskQueue::TaskQueue() {}
 
@@ -10,7 +13,7 @@ void cerberus::TaskQueue::addToRequestQueue(const cerberus::Request& request)
     _request_queue.push(request);
 }
 
-void cerberus::TaskQueue::createWorker()  
+void cerberus::TaskQueue::createWorker(cerberus::TaskQueue::parser_map map)  
 {
     cerberus::Request request;
     int fd;
@@ -20,19 +23,18 @@ void cerberus::TaskQueue::createWorker()
         // Step 1, parse the request
         {
             std::unique_lock<std::mutex> lock(_fd_mutex);
-            _cv.wait(lock, [&](){ return !_fd_queue.empty(); });
+            _request_cv.wait(lock, [&](){ return !_fd_queue.empty(); });
 
             fd = _fd_queue.front(); _fd_queue.pop();
             
             // TODO: Finish implementataion; handle the appending of data
             // when data sent through socket accociated with the fd.
-            while (true) {
-            }
+            cerberus::HttpParser* parser = map[fd].get();
         }
         // Step 2, grab the request
         {
             std::unique_lock<std::mutex> lock(_request_mutex);
-            _cv.wait(lock, [&](){ return !_request_queue.empty(); });
+            _fd_cv.wait(lock, [&](){ return !_request_queue.empty(); });
 
             request = _request_queue.front(); _request_queue.pop();
         }  
