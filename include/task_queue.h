@@ -6,6 +6,7 @@
 #include <condition_variable>
 #include <memory>
 #include <queue>
+#include <sys/socket.h>
 #include <unordered_map>
 
 #define NUM_OF_THREADS 10
@@ -23,7 +24,7 @@ public:
     void addToRequestQueue(const cerberus::Request& request);    
     void addToFdQueue(const int fd);
 
-    void createWorker(cerberus::TaskQueue::parser_map map);
+    void createWorker(cerberus::TaskQueue::parser_map map, const sockaddr_storage& recieved_connection);
 
     void spinUpWorkerThreads(const int number_of_threads);
 

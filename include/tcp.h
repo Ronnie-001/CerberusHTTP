@@ -51,7 +51,7 @@ public:
     static std::string readData(const int _conn_fd, const sockaddr_storage& recieved_connection, cerberus::TcpListener::parser_map& map);
     
     // Used to parse and extract the start line, and HTTP headers, and potential message body.
-    void parseHttpRequest(cerberus::HttpParser* parser);
+    static void parseHttpRequest(cerberus::HttpParser* parser);
 
     void sendResponse(const int& _conn_fd);
 

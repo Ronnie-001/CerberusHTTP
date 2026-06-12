@@ -175,7 +175,7 @@ void cerberus::TcpListener::listenForConnections()
                 parser->appendData(data); 
 
                 if (parser->isRequestComplete()) {
-                
+
                     parseHttpRequest(parser);
                     cerberus::Request req = parser->constructRequest();
                     std::cout << req;
