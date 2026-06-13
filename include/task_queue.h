@@ -24,9 +24,9 @@ public:
     void addToRequestQueue(const cerberus::Request& request);    
     void addToFdQueue(const int fd);
 
-    void createWorker(cerberus::TaskQueue::parser_map map, const sockaddr_storage& recieved_connection);
+    void createWorker(cerberus::TaskQueue::parser_map& map, const sockaddr_storage& recieved_connection);
 
-    void spinUpWorkerThreads(const int number_of_threads);
+    void spinUpWorkerThreads(const int number_of_threads, cerberus::TaskQueue::parser_map& map, const sockaddr_storage& recieved_connection);
 
     void handleRequest(const Request& request);
 

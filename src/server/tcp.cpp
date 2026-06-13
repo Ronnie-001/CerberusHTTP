@@ -118,6 +118,9 @@ void cerberus::TcpListener::listenForConnections()
     // Create the metics counter
     // cerberus::Metrics metrics("127.0.0.1:8010", "/metrics");
 
+    auto requests_queue = std::make_unique<cerberus::TaskQueue>();
+    requests_queue->spinUpWorkerThreads(10, _parsers, _received_connection);
+
     while (_server_running) {
         // Grab the number of READY file descriptors
         int nfds = epoll_wait(_epoll_fd, _events, MAX_EVENTS, -1);
@@ -126,13 +129,12 @@ void cerberus::TcpListener::listenForConnections()
             exit(EXIT_FAILURE);
         }
 
-        auto requests_queue = std::make_unique<cerberus::TaskQueue>();
-        requests_queue->spinUpWorkerThreads(10);
-
         // Loop through all of the READY file descriptors.
         for (int i = 0; i < nfds; ++i) {
 
             int fd = _events[i].data.fd;
+
+            std::cout << "[LOGS] Current file descriptor: " << fd << '\n';
 
             if (fd == _sock_fd) { // New socket, use a new HTTP parser object.
                 while (true) {
@@ -165,32 +167,38 @@ void cerberus::TcpListener::listenForConnections()
 
                     auto parser = std::make_unique<cerberus::HttpParser>(_conn_fd);
                     _parsers[_conn_fd] = std::move(parser);
+
+                    std::cout << "[LOGS] Created parser with the following fd: " << _conn_fd << '\n'; 
                 }
             } else { // This is an existing socket, grab the associated parser through the file descriptor and append data.
-                cerberus::HttpParser* parser = _parsers[fd].get();
-                
-                std::string data = readData(fd, _received_connection, _parsers);
-                std::cout << data << '\n';
-
-                parser->appendData(data); 
-
-                if (parser->isRequestComplete()) {
-
-                    parseHttpRequest(parser);
-                    cerberus::Request req = parser->constructRequest();
-                    std::cout << req;
-
-                    // TESTING: Check that writing to the JSON file actually works.
-                    auto data_handler = std::make_unique<cerberus::Data>(req.resourcePath);
-                    auto router = std::make_unique<cerberus::Router>(*data_handler);
-                    router->checkHttpMethod(req);
-
-                    // metrics.countRequest();
-                    sendResponse(fd);
-                    
-                } else {
-                    continue;
-                }
+                    requests_queue->addToFdQueue(fd); 
+                    std::cout << "[LOGS] Addedd file descriptor: " << fd << " to fd queue." << '\n';
+//                cerberus::HttpParser* parser = _parsers[fd].get();
+//                
+//                std::cout << "[LOGS] The fd used to grab the parser: " << fd << '\n';
+//                
+//                std::string data = readData(fd, _received_connection, _parsers);
+//                std::cout << data << '\n';
+//
+//                parser->appendData(data); 
+//
+//                if (parser->isRequestComplete()) {
+//
+//                    parseHttpRequest(parser);
+//                    cerberus::Request req = parser->constructRequest();
+//                    std::cout << req;
+//
+//                    // TESTING: Check that writing to the JSON file actually works.
+//                    auto data_handler = std::make_unique<cerberus::Data>(req.resourcePath);
+//                    auto router = std::make_unique<cerberus::Router>(*data_handler);
+//                    router->checkHttpMethod(req);
+//
+//                    // metrics.countRequest();
+//                    sendResponse(fd);
+//                    
+//                } else {
+//                    continue;
+//                }
             }
         }
     } 
