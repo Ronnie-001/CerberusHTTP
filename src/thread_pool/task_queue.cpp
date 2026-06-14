@@ -9,11 +9,12 @@
 
 cerberus::TaskQueue::TaskQueue() {}
 
-void cerberus::TaskQueue::addToRequestQueue(const cerberus::Request& request) 
+void cerberus::TaskQueue::addToRequestQueue(const cerberus::Request request) 
 {
     std::unique_lock<std::mutex> lock(_request_mutex);
     _request_queue.push(request);
     _request_cv.notify_one();
+    _request_mutex.unlock();
 }
 
 void cerberus::TaskQueue::addToFdQueue(const int fd) 
@@ -23,12 +24,10 @@ void cerberus::TaskQueue::addToFdQueue(const int fd)
     _fd_cv.notify_one();
 }
 
-void cerberus::TaskQueue::createWorker(cerberus::TaskQueue::parser_map& map, const sockaddr_storage& recieved_connection)  
+void cerberus::TaskQueue::createParserWorker(cerberus::TaskQueue::parser_map& map, const sockaddr_storage& recieved_connection)  
 {
-    cerberus::Request request;
     int fd;
-    
-    std::cout << "[LOGS] Worker thread created." << '\n';
+    std::cout << "[LOGS] Parser Worker thread created." << '\n';
     
     while (true) {
         // Use nested scope for RAII
@@ -37,7 +36,7 @@ void cerberus::TaskQueue::createWorker(cerberus::TaskQueue::parser_map& map, con
             std::unique_lock<std::mutex> lock(_fd_mutex);
             _fd_cv.wait(lock, [&](){ return !_fd_queue.empty(); });
 
-            std::cout << "[LOGS] Aqquired mutex" << '\n';
+            std::cout << "[LOGS] Aqquired fd mutex" << '\n';
             fd = _fd_queue.front(); _fd_queue.pop();
             lock.unlock();
 
@@ -56,29 +55,49 @@ void cerberus::TaskQueue::createWorker(cerberus::TaskQueue::parser_map& map, con
                 cerberus::TcpListener::parseHttpRequest(parser);
                 
                 cerberus::Request req = parser->constructRequest();
-                _request_queue.push(req);
+                std::cout << req;
+
+                std::unique_lock<std::mutex> lock(_request_mutex);
+                addToRequestQueue(req);
+                lock.unlock();
+
+                _request_cv.notify_one();
             }
         }
-        // Step 2, grab the request
+    }
+}
+
+void cerberus::TaskQueue::createRequestWorker() 
+{
+    cerberus::Request request;
+
+    std::cout << "[LOGS] Request Worker thread created." << '\n';
+
+    while (true) {
         {
             std::unique_lock<std::mutex> lock(_request_mutex);
             _request_cv.wait(lock, [&](){ return !_request_queue.empty(); });
+            std::cout << "[LOGS] Aqquired request mutex" << '\n';
 
-            request = _request_queue.front(); _request_queue.pop();
-            
-            std::cout << "[LOGS] WORKING!";
-        }  
-        
+            request = _request_queue.front();  _request_queue.pop();
+            std::cout << "[LOGS] REQUEST THREAD WORKING!";
+        }
+
         handleRequest(request);
     }
 }
 
 void cerberus::TaskQueue::spinUpWorkerThreads(const int number_of_threads, cerberus::TaskQueue::parser_map& map, const sockaddr_storage& recieved_connection)
 {
-    for (std::size_t i = 0; i < number_of_threads; ++i) {
-        std::jthread thread(&cerberus::TaskQueue::createWorker, this, std::ref(map), std::ref(recieved_connection));
-        thread.detach();
+    for (std::size_t i = 0; i < number_of_threads / 2; ++i) {
+        std::jthread parserThread(&cerberus::TaskQueue::createParserWorker, this, std::ref(map), std::ref(recieved_connection));
+        parserThread.detach();
     }
+
+    for (std::size_t i = 0; i < number_of_threads / 2; ++i) {
+        std::jthread requestThread(&cerberus::TaskQueue::createRequestWorker, this);
+        requestThread.detach();
+    }    
 
     std::cout << "[LOGS] Spun up the worker threads." << '\n';
 }

@@ -21,10 +21,11 @@ public:
     // Constructors
     TaskQueue();
         
-    void addToRequestQueue(const cerberus::Request& request);    
+    void addToRequestQueue(const cerberus::Request request);    
     void addToFdQueue(const int fd);
 
-    void createWorker(cerberus::TaskQueue::parser_map& map, const sockaddr_storage& recieved_connection);
+    void createParserWorker(cerberus::TaskQueue::parser_map& map, const sockaddr_storage& recieved_connection);
+    void createRequestWorker();
 
     void spinUpWorkerThreads(const int number_of_threads, cerberus::TaskQueue::parser_map& map, const sockaddr_storage& recieved_connection);
 
