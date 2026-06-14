@@ -14,7 +14,6 @@ void cerberus::TaskQueue::addToRequestQueue(const cerberus::Request request)
     std::unique_lock<std::mutex> lock(_request_mutex);
     _request_queue.push(request);
     _request_cv.notify_one();
-    _request_mutex.unlock();
 }
 
 void cerberus::TaskQueue::addToFdQueue(const int fd) 
@@ -57,11 +56,7 @@ void cerberus::TaskQueue::createParserWorker(cerberus::TaskQueue::parser_map& ma
                 cerberus::Request req = parser->constructRequest();
                 std::cout << req;
 
-                std::unique_lock<std::mutex> lock(_request_mutex);
                 addToRequestQueue(req);
-                lock.unlock();
-
-                _request_cv.notify_one();
             }
         }
     }
