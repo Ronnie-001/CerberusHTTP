@@ -6,6 +6,9 @@
 
 #include "task_queue.h"
 #include "tcp.h"
+#include "metrics.h"
+#include "data.h"
+#include "router.h"
 
 cerberus::TaskQueue::TaskQueue() {}
 
@@ -52,10 +55,10 @@ void cerberus::TaskQueue::createParserWorker(cerberus::TaskQueue::parser_map& ma
 
             if (parser->isRequestComplete()) {
                 cerberus::TcpListener::parseHttpRequest(parser);
+                cerberus::Metrics metrics("127.0.0.1:8010", "/metrics");
                 
                 cerberus::Request req = parser->constructRequest();
                 std::cout << req;
-
                 addToRequestQueue(req);
             }
         }
@@ -75,7 +78,6 @@ void cerberus::TaskQueue::createRequestWorker()
             std::cout << "[LOGS] Aqquired request mutex" << '\n';
 
             request = _request_queue.front();  _request_queue.pop();
-            std::cout << "[LOGS] REQUEST THREAD WORKING!";
         }
 
         handleRequest(request);
@@ -101,5 +103,8 @@ void cerberus::TaskQueue::spinUpWorkerThreads(const int number_of_threads, cerbe
 void cerberus::TaskQueue::handleRequest(const Request& request) 
 {
     _active_threads++;
-    std::cout << "Got to the handleRequest() method!" << '\n';
+
+    auto data_handler = std::make_unique<cerberus::Data>(request.resourcePath);
+    auto router = std::make_unique<cerberus::Router>(*data_handler);
+    router->checkHttpMethod(request);                                              
 }
