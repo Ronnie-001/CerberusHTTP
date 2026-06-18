@@ -9,7 +9,7 @@ class Metrics
 {
 public:
     // Init all the metrics and label them through the constructor.
-    Metrics(std::string&& server_address, std::string&& path);
+    Metrics(std::string& server_address, std::string& path);
 
     void countRequest();
 

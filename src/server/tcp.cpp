@@ -19,7 +19,7 @@
 #include "tcp.h"
 #include "data.h"
 #include "parser.h"
-// #include "metrics.h"
+#include "metrics.h"
 #include "m_strings.h"
 #include "router.h"
 #include "task_queue.h"
@@ -115,11 +115,19 @@ void cerberus::TcpListener::listenForConnections()
         exit(EXIT_FAILURE);
     } 
     
-    // Create the metics counter
-    // cerberus::Metrics metrics("127.0.0.1:8010", "/metrics");
+    std::string server_address = "127.0.0.1:8010";
+    std::string endpoint = "/metrics";
 
-    auto requests_queue = std::make_unique<cerberus::TaskQueue>();
-    requests_queue->spinUpWorkerThreads(10, _parsers, _received_connection);
+    // Create the metics counter
+    cerberus::Metrics metrics(server_address, endpoint);
+    
+    // Create the HTTP router queue
+    auto data_handler = std::make_unique<cerberus::Data>();
+    auto router = std::make_unique<cerberus::Router>(*data_handler);
+    
+    // Create the requests 
+    auto requests_queue = std::make_unique<cerberus::TaskQueue>(metrics);
+    requests_queue->spinUpWorkerThreads(10, _parsers, _received_connection, *router);
 
     while (_server_running) {
         // Grab the number of READY file descriptors
@@ -173,32 +181,6 @@ void cerberus::TcpListener::listenForConnections()
             } else { // This is an existing socket, grab the associated parser through the file descriptor and append data.
                     requests_queue->addToFdQueue(fd); 
                     std::cout << "[LOGS] Addedd file descriptor: " << fd << " to fd queue." << '\n';
-//                cerberus::HttpParser* parser = _parsers[fd].get();
-//                
-//                std::cout << "[LOGS] The fd used to grab the parser: " << fd << '\n';
-//                
-//                std::string data = readData(fd, _received_connection, _parsers);
-//                std::cout << data << '\n';
-//
-//                parser->appendData(data); 
-//
-//                if (parser->isRequestComplete()) {
-//
-//                    parseHttpRequest(parser);
-//                    cerberus::Request req = parser->constructRequest();
-//                    std::cout << req;
-//
-//                    // TESTING: Check that writing to the JSON file actually works.
-//                    auto data_handler = std::make_unique<cerberus::Data>(req.resourcePath);
-//                    auto router = std::make_unique<cerberus::Router>(*data_handler);
-//                    router->checkHttpMethod(req);
-//
-//                    // metrics.countRequest();
-//                    sendResponse(fd);
-//                    
-//                } else {
-//                    continue;
-//                }
             }
         }
     } 

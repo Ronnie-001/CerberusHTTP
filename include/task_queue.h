@@ -1,13 +1,16 @@
 #ifndef TASK_QUEUE
 #define TASK_QUEUE
 
-#include "parser.h"
-#include "request.h"
 #include <condition_variable>
 #include <memory>
 #include <queue>
 #include <sys/socket.h>
 #include <unordered_map>
+
+#include "metrics.h"
+#include "parser.h"
+#include "request.h"
+#include "router.h"
 
 #define NUM_OF_THREADS 10
 
@@ -19,17 +22,18 @@ public:
     using parser_map = std::unordered_map<int, std::unique_ptr<cerberus::HttpParser>>;
 
     // Constructors
-    TaskQueue();
+    TaskQueue(cerberus::Metrics& metrics);
         
     void addToRequestQueue(const cerberus::Request request);    
     void addToFdQueue(const int fd);
 
     void createParserWorker(cerberus::TaskQueue::parser_map& map, const sockaddr_storage& recieved_connection);
-    void createRequestWorker();
+    void createRequestWorker(cerberus::Router& router);
 
-    void spinUpWorkerThreads(const int number_of_threads, cerberus::TaskQueue::parser_map& map, const sockaddr_storage& recieved_connection);
+    void spinUpWorkerThreads(const int number_of_threads, cerberus::TaskQueue::parser_map& map, 
+                             const sockaddr_storage& recieved_connection, cerberus::Router& router);
 
-    void handleRequest(const Request& request);
+    void handleRequest(const cerberus::Request& request, cerberus::Router& router);
 
 private:
     std::queue<cerberus::Request> _request_queue;
@@ -40,7 +44,8 @@ private:
     std::mutex _fd_mutex;
     std::condition_variable _fd_cv;
 
-    int _active_threads;
+
+    cerberus::Metrics& _metrics;
 };
 }
 

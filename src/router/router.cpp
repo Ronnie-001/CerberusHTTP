@@ -13,6 +13,7 @@ void cerberus::Router::checkHttpMethod(const cerberus::Request& request)
 {
     std::cout << "[LOGS] in the checkHttpMethod! " << '\n';
     // Validate the resource that is trying to be accessed first.    
+    // if (!verifyResource(request.resourcePath)) throw std::invalid_argument("[ERROR] Requested resource could not be found.");
     if (!verifyResource(request.resourcePath)) throw std::invalid_argument("[ERROR] Requested resource could not be found.");
 
     switch (request.method) {
@@ -48,7 +49,7 @@ void cerberus::Router::handlePutRequest(const cerberus::Request& request)
 {
     auto map = request.body.value();
     User user = { map["username"], map["password"] };
-    _data_handler.addUser(user);
+    _data_handler.addUser(user, request.resourcePath);
 }
 
 void cerberus::Router::handlePostRequest(const cerberus::Request& request) {}

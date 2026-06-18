@@ -4,11 +4,10 @@
 
 #include "data.h"
 
-cerberus::Data::Data(std::string_view file_path) : _file_path(file_path) 
-{}
+cerberus::Data::Data() {}
 
 // ../var/users.json
-void cerberus::Data::addUser(const cerberus::User& user) 
+void cerberus::Data::addUser(const cerberus::User& user, const std::string& file_path) 
 {
     nlohmann::json user_json;
     toJson(user_json, user);
@@ -19,7 +18,7 @@ void cerberus::Data::addUser(const cerberus::User& user)
     
     // Read the data from the file
     nlohmann::json file_data;
-    std::ifstream infile(_file_path); // Takes in the relative file path
+    std::ifstream infile(file_path); // Takes in the relative file path
     if (infile.is_open()) {
         infile >> file_data; 
         infile.close();
@@ -29,7 +28,7 @@ void cerberus::Data::addUser(const cerberus::User& user)
 
     file_data["users"].push_back(user_json);
     
-    std::ofstream outfile(_file_path);
+    std::ofstream outfile(file_path);
     if (outfile.is_open()) {
         outfile << file_data.dump(4) << '\n';
         outfile.close(); 

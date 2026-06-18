@@ -10,7 +10,7 @@ A multithreaded HTTP/1.1 server built from scratch in C++20. No frameworks, no e
 
 ## Overview
 
-CerberusHTTP is a from-scratch implementation of an HTTP/1.1 server using the POSIX sockets API. It handles concurrent connections through a thread pool backed by a task queue, and uses Linux's `epoll` for efficient I/O event notification. Incoming requests are fully parsed — start line, headers, and message body — then routed to the appropriate handler based on the HTTP method.
+CerberusHTTP is a from-scratch implementation of an HTTP/1.1 server using the POSIX sockets API. It handles concurrent connections through a thread pool backed by a task queue, and uses Linux's `epoll` for efficient I/O event notification.
 
 ## Architecture
 

@@ -7,10 +7,9 @@
 #include "task_queue.h"
 #include "tcp.h"
 #include "metrics.h"
-#include "data.h"
 #include "router.h"
 
-cerberus::TaskQueue::TaskQueue() {}
+cerberus::TaskQueue::TaskQueue(cerberus::Metrics& metrics) : _metrics(metrics) {}
 
 void cerberus::TaskQueue::addToRequestQueue(const cerberus::Request request) 
 {
@@ -44,8 +43,6 @@ void cerberus::TaskQueue::createParserWorker(cerberus::TaskQueue::parser_map& ma
 
             std::cout << "[LOGS] file descriptor in thread: " << fd << '\n';
             
-            // TODO: Finish implementataion; handle the appending of data
-            // when data sent through socket accociated with the fd.
             cerberus::HttpParser* parser = map[fd].get();
             std::string data = cerberus::TcpListener::readData(fd, recieved_connection, map); 
 
@@ -55,17 +52,18 @@ void cerberus::TaskQueue::createParserWorker(cerberus::TaskQueue::parser_map& ma
 
             if (parser->isRequestComplete()) {
                 cerberus::TcpListener::parseHttpRequest(parser);
-                cerberus::Metrics metrics("127.0.0.1:8010", "/metrics");
                 
                 cerberus::Request req = parser->constructRequest();
                 std::cout << req;
                 addToRequestQueue(req);
+
+                _metrics.countRequest();
             }
         }
     }
 }
 
-void cerberus::TaskQueue::createRequestWorker() 
+void cerberus::TaskQueue::createRequestWorker(cerberus::Router& router) 
 {
     cerberus::Request request;
 
@@ -80,11 +78,12 @@ void cerberus::TaskQueue::createRequestWorker()
             request = _request_queue.front();  _request_queue.pop();
         }
 
-        handleRequest(request);
+        handleRequest(request, router);
     }
 }
 
-void cerberus::TaskQueue::spinUpWorkerThreads(const int number_of_threads, cerberus::TaskQueue::parser_map& map, const sockaddr_storage& recieved_connection)
+void cerberus::TaskQueue::spinUpWorkerThreads(const int number_of_threads, cerberus::TaskQueue::parser_map& map, 
+                                              const sockaddr_storage& recieved_connection, cerberus::Router& router)
 {
     for (std::size_t i = 0; i < number_of_threads / 2; ++i) {
         std::jthread parserThread(&cerberus::TaskQueue::createParserWorker, this, std::ref(map), std::ref(recieved_connection));
@@ -92,7 +91,7 @@ void cerberus::TaskQueue::spinUpWorkerThreads(const int number_of_threads, cerbe
     }
 
     for (std::size_t i = 0; i < number_of_threads / 2; ++i) {
-        std::jthread requestThread(&cerberus::TaskQueue::createRequestWorker, this);
+        std::jthread requestThread(&cerberus::TaskQueue::createRequestWorker, this, std::ref(router));
         requestThread.detach();
     }    
 
@@ -100,11 +99,7 @@ void cerberus::TaskQueue::spinUpWorkerThreads(const int number_of_threads, cerbe
 }
 
 // TODO: Implement the handleRequest method.
-void cerberus::TaskQueue::handleRequest(const Request& request) 
+void cerberus::TaskQueue::handleRequest(const cerberus::Request& request, cerberus::Router& router) 
 {
-    _active_threads++;
-
-    auto data_handler = std::make_unique<cerberus::Data>(request.resourcePath);
-    auto router = std::make_unique<cerberus::Router>(*data_handler);
-    router->checkHttpMethod(request);                                              
+    router.checkHttpMethod(request);
 }

@@ -69,6 +69,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <mutex>
+#include <charconv>
 #include <functional>
 #include <sstream>
 #include <array>
