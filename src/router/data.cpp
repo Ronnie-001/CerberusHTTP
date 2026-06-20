@@ -6,7 +6,6 @@
 
 cerberus::Data::Data() {}
 
-// ../var/users.json
 void cerberus::Data::addUser(const cerberus::User& user, const std::string& file_path) 
 {
     nlohmann::json user_json;

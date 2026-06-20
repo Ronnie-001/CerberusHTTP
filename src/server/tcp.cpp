@@ -44,8 +44,7 @@ cerberus::TcpListener::TcpListener() : _server_running(false)
    _status = getaddrinfo(NULL, MY_PORT, &_hints, &_servinfo);
 }
 
-cerberus::TcpListener::~TcpListener() 
-{}
+cerberus::TcpListener::~TcpListener() {}
 
 void cerberus::TcpListener::findServerAddress()
 {
@@ -178,7 +177,7 @@ void cerberus::TcpListener::listenForConnections()
 
                     std::cout << "[LOGS] Created parser with the following fd: " << _conn_fd << '\n'; 
                 }
-            } else { // This is an existing socket, grab the associated parser through the file descriptor and append data.
+            } else { // This is an existing socket, ad the file desciptor to the queue to be processed.
                     requests_queue->addToFdQueue(fd); 
                     std::cout << "[LOGS] Addedd file descriptor: " << fd << " to fd queue." << '\n';
             }
@@ -253,12 +252,8 @@ std::string cerberus::TcpListener::readData(const int fd, const sockaddr_storage
         }
 
         data.append(buffer, nread);             
-
-//        std::cout << "data recieved: " << '\n';
-//        std::cout << "-------------DATA---------------" << '\n';
-//        std::cout << data;
-//        std::cout << "--------------------------------" << '\n';
     }
+
     return data;
 }
 

@@ -86,7 +86,7 @@ void cerberus::TaskQueue::spinUpWorkerThreads(const int number_of_threads, cerbe
                                               const sockaddr_storage& recieved_connection, cerberus::Router& router)
 {
     for (std::size_t i = 0; i < number_of_threads / 2; ++i) {
-        std::jthread parserThread(&cerberus::TaskQueue::createParserWorker, this, std::ref(map), std::ref(recieved_connection));
+       std::jthread parserThread(&cerberus::TaskQueue::createParserWorker, this, std::ref(map), std::ref(recieved_connection));
         parserThread.detach();
     }
 

@@ -20,18 +20,21 @@ class Data
 {
 public:
     Data();
-
-    // Methods updating the map.
-    void addUser(const cerberus::User& user, const std::string& file_path);
-
+    
+    // GET 
+    cerberus::User getUser();
+    // PUT 
     void updateUser();
-
+    // POST 
+    void addUser(const cerberus::User& user, const std::string& file_path);
+    // DELETE
     void deleteUser();
 
-    cerberus::User getUser();
+    void addToJsonFile();
+    void updateJsonFile();
+    void removeFromJsonFile();
 
     void toJson(nlohmann::json& json, const User& user);
-
     void fromJson(const nlohmann::json& json, User& user); 
 
 private:
