@@ -4,6 +4,7 @@
 #include <mutex>
 #include <string>
 #include <unordered_map>
+#include <cstdint>
 
 #include <nlohmann/json.hpp>
 
@@ -21,24 +22,21 @@ class Data
 public:
     Data();
     
-    // GET 
-    cerberus::User getUser();
-    // PUT 
-    void updateUser();
-    // POST 
-    void addUser(const cerberus::User& user, const std::string& file_path);
-    // DELETE
-    void deleteUser();
+    // Interactions with the user_map.
+    cerberus::User getUser(const std::uint64_t id);
+    void updateUser(const std::uint64_t id, const cerberus::User user);
+    void addUser(const std::uint64_t id, const cerberus::User user);
+    void deleteUser(const std::uint64_t id);
 
-    void addToJsonFile();
-    void updateJsonFile();
-    void removeFromJsonFile();
-
+    void addToJsonFile(const cerberus::User& user, const std::string& file_path);
+    void updateJsonFile(const cerberus::User& user, const std::string& file_path);
+    void removeFromJsonFile(const cerberus::User& user, const std::string& file_path);
+    
     void toJson(nlohmann::json& json, const User& user);
     void fromJson(const nlohmann::json& json, User& user); 
 
 private:
-    std::unordered_map<std::string, cerberus::User> _user_map;
+    std::unordered_map<std::uint64_t, cerberus::User> _user_map;
     std::unique_lock<std::mutex> _map_mutex;
 
     std::unique_lock<std::mutex> _file_mutex;

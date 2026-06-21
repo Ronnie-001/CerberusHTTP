@@ -6,7 +6,27 @@
 
 cerberus::Data::Data() {}
 
-void cerberus::Data::addUser(const cerberus::User& user, const std::string& file_path) 
+cerberus::User cerberus::Data::getUser(const std::uint64_t id) 
+{
+    return _user_map[id];    
+}
+
+void cerberus::Data::updateUser(const std::uint64_t id, const cerberus::User user)
+{
+    _user_map[id] = user;
+}
+
+void cerberus::Data::addUser(const std::uint64_t id, const cerberus::User user)
+{
+    _user_map[id] = user; 
+}
+
+void cerberus::Data::deleteUser(const std::uint64_t id)
+{
+    _user_map.erase(id);     
+}
+
+void cerberus::Data::addToJsonFile(const cerberus::User& user, const std::string& file_path) 
 {
     nlohmann::json user_json;
     toJson(user_json, user);
