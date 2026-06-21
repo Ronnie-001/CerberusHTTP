@@ -51,6 +51,8 @@ void cerberus::Router::handlePutRequest(const cerberus::Request& request, cerber
     auto map = request.body.value();
     User user = { map["username"], map["password"] };
     data.addUser(id, user);
+
+    // TODO: Add the HTTP response after handling request.
 }
 
 void cerberus::Router::handlePostRequest(const cerberus::Request& request, cerberus::Data& data, const std::uint64_t id) {}
