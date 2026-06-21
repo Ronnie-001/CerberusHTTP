@@ -16,7 +16,7 @@ void cerberus::Data::updateUser(const std::uint64_t id, const cerberus::User use
     _user_map[id] = user;
 }
 
-void cerberus::Data::addUser(const std::uint64_t id, const cerberus::User user)
+void cerberus::Data::addUser(const std::uint64_t id, const cerberus::User user) 
 {
     _user_map[id] = user; 
 }

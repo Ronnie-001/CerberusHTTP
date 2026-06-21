@@ -11,9 +11,9 @@ namespace cerberus
 class Router 
 {
 public:
-    Router(cerberus::Data& data);
+    Router();
     
-    void checkHttpMethod(const cerberus::Request& request);
+    void checkHttpMethod(const cerberus::Request& request, cerberus::Data& data, std::uint64_t id);
     
     // Checks if the resource actually exists on the server.
     bool verifyResource(std::string_view path);
@@ -21,13 +21,13 @@ public:
     // Functions for handling different HTTP methods.
     void getResource();
     
-    void handleGetRequest(const cerberus::Request& request);
+    void handleGetRequest(const cerberus::Request& request, cerberus::Data& data, std::uint64_t id);
 
-    void handlePutRequest(const cerberus::Request& request);
+    void handlePutRequest(const cerberus::Request& request, cerberus::Data& data, std::uint64_t id);
 
-    void handlePostRequest(const cerberus::Request& request);
+    void handlePostRequest(const cerberus::Request& request, cerberus::Data& data, std::uint64_t id);
 
-    void handleDeleteRequest(const cerberus::Request& request);
+    void handleDeleteRequest(const cerberus::Request& request, cerberus::Data& data, std::uint64_t id);
 
 private:
     cerberus::Data _data_handler;
