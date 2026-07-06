@@ -14,6 +14,7 @@ struct Request
     cerberus::HttpMethod method;
     std::string resourcePath;
     std::string version; 
+    int fd;
 
     // request headers
     std::unordered_map<std::string, std::string> headers;

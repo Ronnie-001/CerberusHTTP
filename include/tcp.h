@@ -53,7 +53,7 @@ public:
     // Used to parse and extract the start line, and HTTP headers, and potential message body.
     static void parseHttpRequest(cerberus::HttpParser* parser);
 
-    void sendResponse(const int& _conn_fd);
+    static void sendResponse(const int& _conn_fd);
 
 private:
     int _status;

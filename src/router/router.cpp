@@ -7,10 +7,11 @@
 #include "constants.h"
 #include "request.h"
 #include "data.h"
+#include "generation.h"
 
 cerberus::Router::Router() {}
 
-void cerberus::Router::checkHttpMethod(const cerberus::Request& request, cerberus::Data& data, std::uint64_t id) 
+void cerberus::Router::checkHttpMethod(const cerberus::Request& request, cerberus::Data& data) 
 {
     std::cout << "[LOGS] in the checkHttpMethod! " << '\n';
     // Validate the resource that is trying to be accessed first.    
@@ -19,13 +20,13 @@ void cerberus::Router::checkHttpMethod(const cerberus::Request& request, cerberu
 
     switch (request.method) {
         case cerberus::HttpMethod::GET:
-            handleGetRequest(request, data, id);
+            handleGetRequest(request, data);
         case cerberus::HttpMethod::PUT:
-            handlePutRequest(request, data, id);
+            handlePutRequest(request, data);
         case cerberus::HttpMethod::POST:
-            handlePostRequest(request, data, id);
+            handlePostRequest(request, data);
         case cerberus::HttpMethod::DELETE:
-            handleDeleteRequest(request, data, id);
+            handleDeleteRequest(request, data);
         default:
             throw std::invalid_argument("[ERROR] No HTTP method provided."); 
     }
@@ -44,10 +45,13 @@ bool cerberus::Router::verifyResource(std::string_view path)
     return std::filesystem::exists(path);
 }
 
-void cerberus::Router::handleGetRequest(const cerberus::Request& request, cerberus::Data& data, const std::uint64_t id) {}
+void cerberus::Router::handleGetRequest(const cerberus::Request& request, cerberus::Data& data) {}
 
-void cerberus::Router::handlePutRequest(const cerberus::Request& request, cerberus::Data& data, const std::uint64_t id) 
+void cerberus::Router::handlePutRequest(const cerberus::Request& request, cerberus::Data& data) 
 {
+    // TODO: Generate the id here.
+    std::uint64_t id = cerberus::generation::generateId();
+
     auto map = request.body.value();
     User user = { map["username"], map["password"] };
     data.addUser(id, user);
@@ -55,6 +59,6 @@ void cerberus::Router::handlePutRequest(const cerberus::Request& request, cerber
     // TODO: Add the HTTP response after handling request.
 }
 
-void cerberus::Router::handlePostRequest(const cerberus::Request& request, cerberus::Data& data, const std::uint64_t id) {}
+void cerberus::Router::handlePostRequest(const cerberus::Request& request, cerberus::Data& data) {}
 
-void cerberus::Router::handleDeleteRequest(const cerberus::Request& request, cerberus::Data& data, const std::uint64_t id) {}
+void cerberus::Router::handleDeleteRequest(const cerberus::Request& request, cerberus::Data& data) {}

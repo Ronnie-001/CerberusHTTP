@@ -122,11 +122,11 @@ void cerberus::TcpListener::listenForConnections()
     
     // Create the HTTP router queue
     auto data_handler = std::make_unique<cerberus::Data>();
-    auto router = std::make_unique<cerberus::Router>(*data_handler);
+    auto router = std::make_unique<cerberus::Router>();
     
     // Create the requests 
     auto requests_queue = std::make_unique<cerberus::TaskQueue>(metrics);
-    requests_queue->spinUpWorkerThreads(10, _parsers, _received_connection, *router);
+    requests_queue->spinUpWorkerThreads(10, _parsers, _received_connection, *router, *data_handler);
 
     while (_server_running) {
         // Grab the number of READY file descriptors

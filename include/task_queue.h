@@ -27,13 +27,16 @@ public:
     void addToRequestQueue(const cerberus::Request request);    
     void addToFdQueue(const int fd);
 
-    void createParserWorker(cerberus::TaskQueue::parser_map& map, const sockaddr_storage& recieved_connection);
-    void createRequestWorker(cerberus::Router& router);
+    void createParserWorker(cerberus::TaskQueue::parser_map& map, const sockaddr_storage& recieved_connection,
+                            cerberus::Data& data);
+
+    void createRequestWorker(cerberus::Router& router, cerberus::Data& data);
 
     void spinUpWorkerThreads(const int number_of_threads, cerberus::TaskQueue::parser_map& map, 
-                             const sockaddr_storage& recieved_connection, cerberus::Router& router);
+                             const sockaddr_storage& recieved_connection, cerberus::Router& router,
+                             cerberus::Data& data);
 
-    void handleRequest(const cerberus::Request& request, cerberus::Router& router);
+    void handleRequest(cerberus::Router& router, const cerberus::Request& request, cerberus::Data& data);
 
 private:
     std::queue<cerberus::Request> _request_queue;
@@ -43,7 +46,6 @@ private:
     std::queue<int> _fd_queue;
     std::mutex _fd_mutex;
     std::condition_variable _fd_cv;
-
 
     cerberus::Metrics& _metrics;
 };
