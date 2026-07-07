@@ -15,7 +15,7 @@ void cerberus::Router::checkHttpMethod(const cerberus::Request& request, cerberu
 {
     std::cout << "[LOGS] in the checkHttpMethod! " << '\n';
     // Validate the resource that is trying to be accessed first.    
-    // if (!verifyResource(request.resourcePath)) throw std::invalid_argument("[ERROR] Requested resource could not be found.");
+
     if (!verifyResource(request.resourcePath)) throw std::invalid_argument("[ERROR] Requested resource could not be found.");
 
     switch (request.method) {
@@ -34,15 +34,19 @@ void cerberus::Router::checkHttpMethod(const cerberus::Request& request, cerberu
 
 bool cerberus::Router::verifyResource(std::string_view path) 
 { 
-    std::filesystem::path p = path;
-    std::filesystem::file_status status = std::filesystem::status(p);
+    std::filesystem::path full_path = std::filesystem::current_path();
+    full_path += path;
+    std::cout << "[LOGS] CURRENT PATH: " << std::filesystem::current_path() << '\n';
+    std::cout << "[LOGS] FULL PATH: " << full_path << '\n';
+
+    std::filesystem::file_status status = std::filesystem::status(full_path);
     
     if (!std::filesystem::status_known(status)) {
         std::cout << "[ERROR] Unkown file status.";
         return false;
     }
 
-    return std::filesystem::exists(path);
+    return std::filesystem::exists(full_path);
 }
 
 void cerberus::Router::handleGetRequest(const cerberus::Request& request, cerberus::Data& data) {}
