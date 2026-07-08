@@ -217,6 +217,10 @@ cerberus::Request cerberus::HttpParser::constructRequest()
     Request req;
 
     // init member variables 
+    
+    if (_method == "PUT") std::cout << "YESSSS" << '\n';
+    if (getHttpMethod("PUT") == cerberus::HttpMethod::PUT) std::cout << "YESSSS x2" << '\n';
+
     req.method = getHttpMethod(_method);
     req.resourcePath = _resource_path;
     req.version = _version;

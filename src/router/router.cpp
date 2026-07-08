@@ -13,20 +13,22 @@ cerberus::Router::Router() {}
 
 void cerberus::Router::checkHttpMethod(const cerberus::Request& request, cerberus::Data& data) 
 {
-    std::cout << "[LOGS] in the checkHttpMethod! " << '\n';
     // Validate the resource that is trying to be accessed first.    
-
     if (!verifyResource(request.resourcePath)) throw std::invalid_argument("[ERROR] Requested resource could not be found.");
 
     switch (request.method) {
         case cerberus::HttpMethod::GET:
             handleGetRequest(request, data);
+            break;
         case cerberus::HttpMethod::PUT:
             handlePutRequest(request, data);
+            break;
         case cerberus::HttpMethod::POST:
             handlePostRequest(request, data);
+            break;
         case cerberus::HttpMethod::DELETE:
             handleDeleteRequest(request, data);
+            break;
         default:
             throw std::invalid_argument("[ERROR] No HTTP method provided."); 
     }
@@ -36,8 +38,6 @@ bool cerberus::Router::verifyResource(std::string_view path)
 { 
     std::filesystem::path full_path = std::filesystem::current_path();
     full_path += path;
-    std::cout << "[LOGS] CURRENT PATH: " << std::filesystem::current_path() << '\n';
-    std::cout << "[LOGS] FULL PATH: " << full_path << '\n';
 
     std::filesystem::file_status status = std::filesystem::status(full_path);
     
@@ -53,7 +53,6 @@ void cerberus::Router::handleGetRequest(const cerberus::Request& request, cerber
 
 void cerberus::Router::handlePutRequest(const cerberus::Request& request, cerberus::Data& data) 
 {
-    // TODO: Generate the id here.
     std::uint64_t id = cerberus::generation::generateId();
 
     auto map = request.body.value();
