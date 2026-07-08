@@ -8,6 +8,7 @@
 #include "request.h"
 #include "data.h"
 #include "generation.h"
+#include "tcp.h"
 
 cerberus::Router::Router() {}
 
@@ -60,6 +61,7 @@ void cerberus::Router::handlePutRequest(const cerberus::Request& request, cerber
     data.addUser(id, user);
 
     // TODO: Add the HTTP response after handling request.
+    cerberus::TcpListener::sendResponse(request.fd);
 }
 
 void cerberus::Router::handlePostRequest(const cerberus::Request& request, cerberus::Data& data) {}
