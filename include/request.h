@@ -12,13 +12,14 @@ struct Request
 {
     // Start line
     cerberus::HttpMethod method;
-    std::string resourcePath;
+    std::string resource_path;
+    std::optional<std::string> resource;
+
     std::string version; 
     int fd;
 
     // request headers
     std::unordered_map<std::string, std::string> headers;
-
     // message body
     std::optional<std::unordered_map<std::string, std::string>> body;
 };

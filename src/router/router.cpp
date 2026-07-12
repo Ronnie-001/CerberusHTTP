@@ -15,7 +15,7 @@ cerberus::Router::Router() {}
 void cerberus::Router::checkHttpMethod(const cerberus::Request& request, cerberus::Data& data) 
 {
     // Validate the resource that is trying to be accessed first.    
-    if (!verifyResource(request.resourcePath)) throw std::invalid_argument("[ERROR] Requested resource could not be found.");
+    if (!verifyResource(request.resource_path)) throw std::invalid_argument("[ERROR] Requested resource could not be found.");
 
     switch (request.method) {
         case cerberus::HttpMethod::GET:
@@ -60,10 +60,22 @@ void cerberus::Router::handlePutRequest(const cerberus::Request& request, cerber
     User user = { map["username"], map["password"] };
     data.addUser(id, user);
 
-    // TODO: Add the HTTP response after handling request.
     cerberus::TcpListener::sendResponse(request.fd);
 }
 
-void cerberus::Router::handlePostRequest(const cerberus::Request& request, cerberus::Data& data) {}
+void cerberus::Router::handlePostRequest(const cerberus::Request& request, cerberus::Data& data) 
+{
+    std::uint64_t id = cerberus::generation::generateId();
 
-void cerberus::Router::handleDeleteRequest(const cerberus::Request& request, cerberus::Data& data) {}
+    auto map = request.body.value();
+    User user = { map["username"], map["password"] };
+    data.addUser(id, user);
+
+    cerberus::TcpListener::sendResponse(request.fd);
+}
+
+void cerberus::Router::handleDeleteRequest(const cerberus::Request& request, cerberus::Data& data) 
+{
+
+    cerberus::TcpListener::sendResponse(request.fd);
+}

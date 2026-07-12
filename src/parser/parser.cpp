@@ -22,7 +22,7 @@ bool cerberus::HttpParser::isRequestComplete()
 {
     std::cout << "in the isRequestComplete() method" << '\n';
 
-    // Check if the recieved HT\nTP request has a message body
+    // Check if the recieved HTTP request has a message body
     int header = cerberus::string::caseInsensitiveSearch(_request, "content-length");
     int crlf = _request.find("\r\n\r\n");
         
@@ -99,6 +99,13 @@ void cerberus::HttpParser::parseStartLine()
     _method = v[0];
     _resource_path = v[1];
     _version = v[2];
+}
+
+void cerberus::HttpParser::parseResourcePath() 
+{
+    // TODO: Make use of '/' as the delimiter, grab the value at
+    // index 0 and set that to be the resource, then reconstruc the 
+    // resource path.
 }
 
 void cerberus::HttpParser::extractHeaders()
@@ -186,7 +193,7 @@ std::ostream& operator<<(std::ostream& out, const cerberus::Request& request)
 {
     out << "------------START LINE--------" << '\n';
     out << "METHOD: " << cerberus::getHttpMethodString(request.method) << '\n';
-    out << "RESOURCE PATH: " << request.resourcePath << '\n';
+    out << "RESOURCE PATH: " << request.resource_path << '\n';
     out << "VERSION: " << request.version << '\n';
     
     // Create a lambda for printing out the headers
@@ -217,12 +224,11 @@ cerberus::Request cerberus::HttpParser::constructRequest()
     Request req;
 
     // init member variables 
-    
     if (_method == "PUT") std::cout << "YESSSS" << '\n';
     if (getHttpMethod("PUT") == cerberus::HttpMethod::PUT) std::cout << "YESSSS x2" << '\n';
 
     req.method = getHttpMethod(_method);
-    req.resourcePath = _resource_path;
+    req.resource_path = _resource_path;
     req.version = _version;
 
     req.headers = _headers;

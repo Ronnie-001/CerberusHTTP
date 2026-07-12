@@ -35,16 +35,22 @@ public:
      * contains the method, resource path and HTTP version,
      */
     void extractStartLine();
+
     // Used for parsing the start line, reteriving the method, resource path and version.
     void parseStartLine(); 
    
     // Used for extracting the headers with the CLRF.
     void extractHeaders();
+
     // Used for getting the headers of the HTTP request
     void parseHeaders();
-         
+
+    // Used for getting the resource path from the resource.
+    void parseResourcePath();     
+
     // Used for getting the JSON message body from the HTTP request.
     void extractMessageBody();
+
     // Used for parsing each individual field from the extracted message body 
     void parseMessageBody();
 
