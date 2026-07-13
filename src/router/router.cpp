@@ -1,7 +1,10 @@
 #include <filesystem>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <cstdint>
+#include <string>
+#include <vector>
 
 #include "router.h"
 #include "constants.h"
@@ -50,7 +53,25 @@ bool cerberus::Router::verifyResource(std::string_view path)
     return std::filesystem::exists(full_path);
 }
 
-void cerberus::Router::handleGetRequest(const cerberus::Request& request, cerberus::Data& data) {}
+
+std::string cerberus::Router::getResource(const std::string& str, char delim) 
+{
+    std::vector<std::string> result;
+    std::stringstream ss(str);
+    std::string store;
+    
+    while (std::getline(ss, store, '/')) {
+        result.push_back(store);
+    }
+    
+    return result[result.size() - 1];
+}
+
+void cerberus::Router::handleGetRequest(const cerberus::Request& request, cerberus::Data& data) 
+{
+
+    cerberus::TcpListener::sendResponse(request.fd);
+}
 
 void cerberus::Router::handlePutRequest(const cerberus::Request& request, cerberus::Data& data) 
 {
@@ -65,11 +86,6 @@ void cerberus::Router::handlePutRequest(const cerberus::Request& request, cerber
 
 void cerberus::Router::handlePostRequest(const cerberus::Request& request, cerberus::Data& data) 
 {
-    std::uint64_t id = cerberus::generation::generateId();
-
-    auto map = request.body.value();
-    User user = { map["username"], map["password"] };
-    data.addUser(id, user);
 
     cerberus::TcpListener::sendResponse(request.fd);
 }

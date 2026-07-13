@@ -18,9 +18,10 @@ public:
     // Checks if the resource actually exists on the server.
     bool verifyResource(std::string_view path);
     
-    // Functions for handling different HTTP methods.
-    void getResource();
+    // Used for grabbing the resource from the end of the provided resource path.
+    std::string getResource(const std::string& str, char delim);
     
+    // Functions for handling different HTTP methods.
     void handleGetRequest(const cerberus::Request& request, cerberus::Data& data);
 
     void handlePutRequest(const cerberus::Request& request, cerberus::Data& data);
