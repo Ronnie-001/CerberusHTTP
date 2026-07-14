@@ -59,6 +59,8 @@ void cerberus::Data::addToJsonFile(const cerberus::User& user, const std::string
 void cerberus::Data::toJson(nlohmann::json& json, const User& user) 
 {
     json = nlohmann::json{ {"username", user.username}, {"password", user.password} };    
+
+
 }
 
 void cerberus::Data::fromJson(const nlohmann::json& json, User& user) 

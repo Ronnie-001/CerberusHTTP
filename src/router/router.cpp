@@ -1,5 +1,6 @@
 #include <filesystem>
 #include <iostream>
+#include <netdb.h>
 #include <sstream>
 #include <stdexcept>
 #include <cstdint>
@@ -12,6 +13,8 @@
 #include "data.h"
 #include "generation.h"
 #include "tcp.h"
+
+#define JSON_FILE_PATH "/var/users.json"
 
 cerberus::Router::Router() {}
 
@@ -69,6 +72,8 @@ std::string cerberus::Router::getResource(const std::string& str, char delim)
 
 void cerberus::Router::handleGetRequest(const cerberus::Request& request, cerberus::Data& data) 
 {
+    std::uint64_t id = std::stoul((getResource(request.resource_path, '/')));
+    cerberus::User user = data.getUser(id);
 
     cerberus::TcpListener::sendResponse(request.fd);
 }
@@ -86,12 +91,21 @@ void cerberus::Router::handlePutRequest(const cerberus::Request& request, cerber
 
 void cerberus::Router::handlePostRequest(const cerberus::Request& request, cerberus::Data& data) 
 {
+    
+    std::uint64_t id = std::stoul((getResource(request.resource_path, '/')));
+
+    auto map = request.body.value();
+    User user = { map["username"], map["password"] };
+    data.updateUser(id, user);
 
     cerberus::TcpListener::sendResponse(request.fd);
 }
 
 void cerberus::Router::handleDeleteRequest(const cerberus::Request& request, cerberus::Data& data) 
 {
+    std::uint64_t id = std::stoul((getResource(request.resource_path, '/')));
+
+    data.deleteUser(id);
 
     cerberus::TcpListener::sendResponse(request.fd);
 }

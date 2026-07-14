@@ -1,12 +1,16 @@
 #ifndef TCP_H
 #define TCP_H
 
-#include "parser.h"
+
+#include <nlohmann/json.hpp>
 #include <memory>
 #include <netdb.h>
+#include <optional>
 #include <sys/epoll.h>
 #include <sys/socket.h>
 #include <unordered_map>
+
+#include "parser.h"
 
 #define MAX_EVENTS 15
 
@@ -53,6 +57,7 @@ public:
     // Used to parse and extract the start line, and HTTP headers, and potential message body.
     static void parseHttpRequest(cerberus::HttpParser* parser);
 
+    // TODO: Add std::optional<nlohmann::json> as another parameter.
     static void sendResponse(const int& _conn_fd);
 
 private:
