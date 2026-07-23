@@ -208,7 +208,6 @@ void cerberus::TcpListener::createEpollInstance()
 
 int cerberus::TcpListener::setNonBlocking(const int fd) 
 {
-
     int flags = fcntl(fd, F_GETFL, 0); 
     if (flags == -1) {
         std::cerr << "[ERROR] Error getting the file access mode and status flags.";
@@ -266,6 +265,7 @@ void cerberus::TcpListener::parseHttpRequest(cerberus::HttpParser* parser)
     parser->parseHeaders();
 }
 
+// TODO: Add parameter that will take in the response string.
 void cerberus::TcpListener::sendResponse(const int& fd) 
 {
     // std::string message = "HTTP/1.1 200 OK\r\nContent-Length: 30\r\nConnection: close\r\n\r\n[SERVER] This is the response!";

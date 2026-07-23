@@ -85,7 +85,8 @@ void cerberus::Router::handlePutRequest(const cerberus::Request& request, cerber
     auto map = request.body.value();
     User user = { map["username"], map["password"] };
     data.addUser(id, user);
-
+    
+    // TODO: Create Response class and create response string
     cerberus::TcpListener::sendResponse(request.fd);
 }
 
