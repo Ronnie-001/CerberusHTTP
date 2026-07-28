@@ -21,6 +21,7 @@
 #include "parser.h"
 #include "metrics.h"
 #include "m_strings.h"
+#include "request.h"
 #include "router.h"
 #include "task_queue.h"
 
@@ -266,7 +267,7 @@ void cerberus::TcpListener::parseHttpRequest(cerberus::HttpParser* parser)
 }
 
 // TODO: Add parameter that will take in the response string.
-void cerberus::TcpListener::sendResponse(const int& fd) 
+void cerberus::TcpListener::sendResponse(const int& fd, const Request& req) 
 {
     // std::string message = "HTTP/1.1 200 OK\r\nContent-Length: 30\r\nConnection: close\r\n\r\n[SERVER] This is the response!";
     std::string message = "HTTP/1.1 200 OK\r\nContent-Length: 30\r\n\r\n[SERVER] This is the test response.";

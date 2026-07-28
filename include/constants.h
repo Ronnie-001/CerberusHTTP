@@ -83,5 +83,21 @@ enum class HttpStatus
     SERVICE_UNAVALIABLE     = 503
 };
 
+enum class ResponseHeader 
+{
+    SERVER,
+    DATE,
+    LOCATION,
+
+    CONTENT_TYPE,
+    CONTENT_LENGTH,
+    CONTENT_ENCODING,
+    CONTENT_LANGUAGE,
+
+    SET_COOKIE,
+    CONNECTION
+
+};
+
 }
 #endif // !CONSTANTS_H

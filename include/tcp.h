@@ -11,6 +11,7 @@
 #include <unordered_map>
 
 #include "parser.h"
+#include "request.h"
 
 #define MAX_EVENTS 15
 
@@ -58,7 +59,7 @@ public:
     static void parseHttpRequest(cerberus::HttpParser* parser);
 
     // TODO: Add std::optional<nlohmann::json> as another parameter.
-    static void sendResponse(const int& _conn_fd);
+    static void sendResponse(const int& _conn_fd, const Request& req);
 
 private:
     int _status;

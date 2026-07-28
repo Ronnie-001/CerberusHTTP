@@ -75,7 +75,7 @@ void cerberus::Router::handleGetRequest(const cerberus::Request& request, cerber
     std::uint64_t id = std::stoul((getResource(request.resource_path, '/')));
     cerberus::User user = data.getUser(id);
 
-    cerberus::TcpListener::sendResponse(request.fd);
+    cerberus::TcpListener::sendResponse(request.fd, request);
 }
 
 void cerberus::Router::handlePutRequest(const cerberus::Request& request, cerberus::Data& data) 
@@ -87,7 +87,7 @@ void cerberus::Router::handlePutRequest(const cerberus::Request& request, cerber
     data.addUser(id, user);
     
     // TODO: Create Response class and create response string
-    cerberus::TcpListener::sendResponse(request.fd);
+    cerberus::TcpListener::sendResponse(request.fd, request);
 }
 
 void cerberus::Router::handlePostRequest(const cerberus::Request& request, cerberus::Data& data) 
@@ -99,7 +99,7 @@ void cerberus::Router::handlePostRequest(const cerberus::Request& request, cerbe
     User user = { map["username"], map["password"] };
     data.updateUser(id, user);
 
-    cerberus::TcpListener::sendResponse(request.fd);
+    cerberus::TcpListener::sendResponse(request.fd, request);
 }
 
 void cerberus::Router::handleDeleteRequest(const cerberus::Request& request, cerberus::Data& data) 
@@ -108,5 +108,5 @@ void cerberus::Router::handleDeleteRequest(const cerberus::Request& request, cer
 
     data.deleteUser(id);
 
-    cerberus::TcpListener::sendResponse(request.fd);
+    cerberus::TcpListener::sendResponse(request.fd, request);
 }
