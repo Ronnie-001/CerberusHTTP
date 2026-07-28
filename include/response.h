@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "nlohmann/json.hpp"
 #include "request.h"
 #include "constants.h"
 
@@ -17,15 +18,13 @@ public:
     void setStatus(cerberus::HttpStatus status);
     // add to std::unordered_map
     void setHeader(cerberus::ResponseHeader header, const std::string&& value);
-    void setBody();
-
+    void setBody(const nlohmann::json& json);
     // application/json
     void setContentType();
     // get the content length of the final response.
     int getContentLength(); 
-    void getDate();
-
-
+    void getCurrentDate();
+    
     std::string getResponse() const;
     
 private:
