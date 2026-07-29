@@ -22,8 +22,8 @@ public:
     // application/json
     void setContentType();
     // get the content length of the final response.
-    int getContentLength(); 
-    void getCurrentDate();
+    std::size_t getContentLength(); 
+    std::string getCurrentDate();
     
     std::string getResponse() const;
     

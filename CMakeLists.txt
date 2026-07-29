@@ -16,6 +16,8 @@ add_subdirectory(src/parser)
 add_subdirectory(src/thread_pool)
 add_subdirectory(src/router)
 add_subdirectory(src/utility)
+add_subdirectory(src/response)
+
 
 add_executable(Server main.cpp)
 
@@ -25,4 +27,5 @@ target_link_libraries(Server
             cerberus_thread_pool
             cerberus_router
             cerberus_utility
+            cerberus_response
 )

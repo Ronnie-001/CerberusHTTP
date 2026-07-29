@@ -24,6 +24,7 @@
 #include "request.h"
 #include "router.h"
 #include "task_queue.h"
+#include "response.h"
 
 #define MY_PORT "8000"
 #define BACKLOG 10
@@ -269,6 +270,8 @@ void cerberus::TcpListener::parseHttpRequest(cerberus::HttpParser* parser)
 // TODO: Add parameter that will take in the response string.
 void cerberus::TcpListener::sendResponse(const int& fd, const Request& req) 
 {
+    cerberus::Response res(req);
+
     // std::string message = "HTTP/1.1 200 OK\r\nContent-Length: 30\r\nConnection: close\r\n\r\n[SERVER] This is the response!";
     std::string message = "HTTP/1.1 200 OK\r\nContent-Length: 30\r\n\r\n[SERVER] This is the test response.";
 

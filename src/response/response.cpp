@@ -1,11 +1,14 @@
-#include "response.h"
-#include "constants.h"
-#include "nlohmann/json.hpp"
-#include "request.h"
+#include <chrono>
+#include <cstring>
+#include <format>
+#include <utility>
 #include <ctime>
 #include <immintrin.h>
-#include <utility>
-#include <iostream>
+#include "nlohmann/json.hpp"
+
+#include "response.h"
+#include "constants.h"
+#include "request.h"
 
 cerberus::Response::Response(const cerberus::Request& req) {}
 
@@ -21,13 +24,20 @@ void cerberus::Response::setHeader(cerberus::ResponseHeader header, const std::s
 
 void cerberus::Response::setBody(const nlohmann::json& json) 
 {
-    std::string str = json.dump();
-    _body = str;
+    _body = json.dump();
 }
 
-void cerberus::Response::getCurrentDate()
+std::size_t cerberus::Response::getContentLength() 
+{
+    return std::strlen(_body.c_str());
+}
+
+std::string cerberus::Response::getCurrentDate()
 {
     std::time_t res = std::time(nullptr);
     std::string time_str = std::asctime(std::localtime(&res));
-    std::cout << time_str;
+    const std::chrono::zoned_time zt{std::chrono::current_zone(), std::chrono::system_clock::now()};
+    
+    // Extract the timezone abbrieviation and return,
+    return std::format("{:%Z}", zt);
 }

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.23)
 
 # Create the object files for linking
-add_library(cerberus_router
+add_library(cerberus_response
     STATIC response.cpp
 )
 
