@@ -121,5 +121,21 @@ enum class ResponseHeader
     CONNECTION
 };
 
+constexpr std::string getResponseHeaderString(const cerberus::ResponseHeader header)
+{
+    if (header == cerberus::ResponseHeader::SERVER) return "Server:";
+    if (header == cerberus::ResponseHeader::DATE) return "Date: ";
+    if (header == cerberus::ResponseHeader::LOCATION) return "Location: ";
+
+    if (header == cerberus::ResponseHeader::CONTENT_TYPE) return "Content Type: ";
+    if (header == cerberus::ResponseHeader::CONTENT_LENGTH) return "Content Length: ";
+    if (header == cerberus::ResponseHeader::CONTENT_ENCODING) return "Content Encoding: ";
+    if (header == cerberus::ResponseHeader::CONTENT_LANGUAGE) return "Content Language: ";
+
+    if (header == cerberus::ResponseHeader::SET_COOKIE) return "Set Cookie: ";
+    if (header == cerberus::ResponseHeader::CONNECTION) return "Connection: ";
+
+    return "NOT PROVIDED";
+}
 }
 #endif // !CONSTANTS_H

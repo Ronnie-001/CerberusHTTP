@@ -20,7 +20,7 @@ void cerberus::Response::setStatus(cerberus::HttpStatus status)
 void cerberus::Response::constructStartLine() 
 {
     // TODO: Add start line into Request object.
-    _start_line = _request.version + " " + 
+    _start_line = _request.version + " " + cerberus::getHttpStatusString(_status);
 }
 
 void cerberus::Response::setHeader(cerberus::ResponseHeader header, const std::string&& value)
@@ -52,7 +52,7 @@ void cerberus::Response::constructResponse()
 {
     // 1. Build start line
     
-    // 2. Add HTTP headers
+    // 2. Add HTTP headers by looping through map
     
     // 3. Add body.
 }
