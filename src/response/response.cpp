@@ -10,11 +10,17 @@
 #include "constants.h"
 #include "request.h"
 
-cerberus::Response::Response(const cerberus::Request& req) {}
+cerberus::Response::Response(const cerberus::Request& req) : _request(req) {}
 
 void cerberus::Response::setStatus(cerberus::HttpStatus status)
 {
     _status = status;
+}
+
+void cerberus::Response::constructStartLine() 
+{
+    // TODO: Add start line into Request object.
+    _start_line = _request.version + " " + 
 }
 
 void cerberus::Response::setHeader(cerberus::ResponseHeader header, const std::string&& value)
@@ -39,5 +45,14 @@ std::string cerberus::Response::getCurrentDate()
     const std::chrono::zoned_time zt{std::chrono::current_zone(), std::chrono::system_clock::now()};
     
     // Extract the timezone abbrieviation and return,
-    return std::format("{:%Z}", zt);
+    return time_str + " " + std::format("{:%Z}", zt);
+}
+
+void cerberus::Response::constructResponse() 
+{
+    // 1. Build start line
+    
+    // 2. Add HTTP headers
+    
+    // 3. Add body.
 }

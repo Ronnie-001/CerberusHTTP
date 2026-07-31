@@ -62,7 +62,7 @@ enum class HttpStatus
     // Redirection response codes
     MOVED_PERMANENTLY       = 301,
     FOUND                   = 302,
-    SEE_OHTER               = 303,
+    SEE_OTHER               = 303,
     NOT_MODIFIED            = 304,
     TEMPORARY_REDIRECT      = 307,
     PERMANENT_REDIRECT      = 308,
@@ -83,6 +83,29 @@ enum class HttpStatus
     SERVICE_UNAVALIABLE     = 503
 };
 
+constexpr std::string getHttpStatusString(const cerberus::HttpStatus status)
+{
+    if (status == cerberus::HttpStatus::OK ) return "OK";
+    if (status == cerberus::HttpStatus::CREATED) return "CREATED";
+    if (status == cerberus::HttpStatus::ACCEPTED) return "ACCEPTED";
+    if (status == cerberus::HttpStatus::NO_CONTENT) return "NO CONTENT";
+
+    if (status == cerberus::HttpStatus::MOVED_PERMANENTLY) return "MOVED PERMANENTLY";
+    if (status == cerberus::HttpStatus::FOUND) return "FOUND";
+    if (status == cerberus::HttpStatus::SEE_OTHER) return "SEE OTHER";
+    if (status == cerberus::HttpStatus::TEMPORARY_REDIRECT) return "TEMPORARY REDIRECT";
+    if (status == cerberus::HttpStatus::PERMANENT_REDIRECT) return "PERMANENT REDIRECT";
+
+    if (status == cerberus::HttpStatus::BAD_REQUEST) return "BAD REQUEST";
+    if (status == cerberus::HttpStatus::UNAUTHORIZED) return "UNAUTHORIZED";
+    if (status == cerberus::HttpStatus::FORBIDDEN) return "FORBIDDEN";
+    if (status == cerberus::HttpStatus::NOT_FOUND) return "NOT FOUND";
+
+    if (status == cerberus::HttpStatus::NOT_IMPLEMENTED) return "NOT IMPLEMENTED";
+
+    return "NOT PROVIDED";
+}
+
 enum class ResponseHeader 
 {
     SERVER,
@@ -96,7 +119,6 @@ enum class ResponseHeader
 
     SET_COOKIE,
     CONNECTION
-
 };
 
 }
