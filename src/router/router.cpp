@@ -13,6 +13,7 @@
 #include "data.h"
 #include "generation.h"
 #include "tcp.h"
+#include "response.h"
 
 #define JSON_FILE_PATH "/var/users.json"
 
@@ -21,7 +22,7 @@ cerberus::Router::Router() {}
 void cerberus::Router::checkHttpMethod(const cerberus::Request& request, cerberus::Data& data) 
 {
     // Validate the resource that is trying to be accessed first.    
-    if (!verifyResource(request.resource_path)) throw std::invalid_argument("[ERROR] Requested resource could not be found.");
+    if (!verifyResource(JSON_FILE_PATH)) throw std::invalid_argument("[ERROR] Requested resource could not be found.");
 
     switch (request.method) {
         case cerberus::HttpMethod::GET:
@@ -85,8 +86,7 @@ void cerberus::Router::handlePutRequest(const cerberus::Request& request, cerber
     auto map = request.body.value();
     User user = { map["username"], map["password"] };
     data.addUser(id, user);
-    
-    // TODO: Create Response class and create response string
+   
     cerberus::TcpListener::sendResponse(request.fd, request);
 }
 

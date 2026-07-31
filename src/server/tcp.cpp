@@ -270,10 +270,13 @@ void cerberus::TcpListener::parseHttpRequest(cerberus::HttpParser* parser)
 // TODO: Add parameter that will take in the response string.
 void cerberus::TcpListener::sendResponse(const int& fd, const Request& req) 
 {
-    cerberus::Response res(req);
+    cerberus::Response response(req);
+    response.constructResponse();
 
+    std::string message = response.getResponse();
+   
     // std::string message = "HTTP/1.1 200 OK\r\nContent-Length: 30\r\nConnection: close\r\n\r\n[SERVER] This is the response!";
-    std::string message = "HTTP/1.1 200 OK\r\nContent-Length: 30\r\n\r\n[SERVER] This is the test response.";
+    // std::string message = "HTTP/1.1 200 OK\r\nContent-Length: 30\r\n\r\n[SERVER] This is the test response.";
 
     std::size_t bytes_sent = send(fd, message.data(), message.size(), 0);
 

@@ -21,9 +21,11 @@ public:
     
     // add to std::unordered_map
     void setHeader(cerberus::ResponseHeader header, const std::string&& value);
+    void setHeaderMetadata();
     void setBody(const nlohmann::json& json);
-    // application/json
+    // defualt is application/json
     void setContentType();
+
     // get the content length of the final response.
     std::size_t getContentLength(); 
     std::string getCurrentDate();
@@ -40,7 +42,6 @@ private:
     std::string _body;
     std::string _final_res;
 
-    
     cerberus::Request _request;
 };
 }

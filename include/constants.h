@@ -123,7 +123,7 @@ enum class ResponseHeader
 
 constexpr std::string getResponseHeaderString(const cerberus::ResponseHeader header)
 {
-    if (header == cerberus::ResponseHeader::SERVER) return "Server:";
+    if (header == cerberus::ResponseHeader::SERVER) return "Server: ";
     if (header == cerberus::ResponseHeader::DATE) return "Date: ";
     if (header == cerberus::ResponseHeader::LOCATION) return "Location: ";
 
