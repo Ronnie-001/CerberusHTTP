@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
+#include <ctime>
 #include <immintrin.h>
 #include <memory>
 #include <netdb.h>
@@ -16,13 +17,19 @@
 #include <fcntl.h>
 
 #include "tcp.h"
+#include "data.h"
 #include "parser.h"
 #include "metrics.h"
 #include "m_strings.h"
+#include "request.h"
+#include "router.h"
+#include "task_queue.h"
+#include "response.h"
 
 #define MY_PORT "8000"
 #define BACKLOG 10
 #define BUFFER_SIZE 1024
+#define NUMBER_OF_THREADS 10
 
 cerberus::TcpListener::TcpListener() : _server_running(false) 
 {
@@ -39,8 +46,7 @@ cerberus::TcpListener::TcpListener() : _server_running(false)
    _status = getaddrinfo(NULL, MY_PORT, &_hints, &_servinfo);
 }
 
-cerberus::TcpListener::~TcpListener() 
-{}
+cerberus::TcpListener::~TcpListener() {}
 
 void cerberus::TcpListener::findServerAddress()
 {
@@ -110,8 +116,19 @@ void cerberus::TcpListener::listenForConnections()
         exit(EXIT_FAILURE);
     } 
     
+    std::string server_address = "127.0.0.1:8010";
+    std::string endpoint = "/metrics";
+
     // Create the metics counter
-    cerberus::Metrics metrics("127.0.0.1:8010", "/metrics");
+    cerberus::Metrics metrics(server_address, endpoint);
+    
+    // Create the HTTP router queue
+    auto data_handler = std::make_unique<cerberus::Data>();
+    auto router = std::make_unique<cerberus::Router>();
+    
+    // Create the requests 
+    auto requests_queue = std::make_unique<cerberus::TaskQueue>(metrics);
+    requests_queue->spinUpWorkerThreads(10, _parsers, _received_connection, *router, *data_handler);
 
     while (_server_running) {
         // Grab the number of READY file descriptors
@@ -125,6 +142,8 @@ void cerberus::TcpListener::listenForConnections()
         for (int i = 0; i < nfds; ++i) {
 
             int fd = _events[i].data.fd;
+
+            std::cout << "[LOGS] Current file descriptor: " << fd << '\n';
 
             if (fd == _sock_fd) { // New socket, use a new HTTP parser object.
                 while (true) {
@@ -157,26 +176,12 @@ void cerberus::TcpListener::listenForConnections()
 
                     auto parser = std::make_unique<cerberus::HttpParser>(_conn_fd);
                     _parsers[_conn_fd] = std::move(parser);
+
+                    std::cout << "[LOGS] Created parser with the following fd: " << _conn_fd << '\n'; 
                 }
-            } else { // This is an existing socket, grab the associated parser through the file descriptor and append data.
-                cerberus::HttpParser* parser = _parsers[fd].get();
-
-                std::string data = readData(fd);
-                parser->appendData(data); 
-
-                if (parser->isRequestComplete()) {
-
-                    parseHttpRequest(parser);
-                    cerberus::Request req = parser->constructRequest();
-                    std::cout << req;
-
-                    metrics.countRequest();
-                    sendResponse(fd);
-                    
-                    // TODO: Pass request to queue to be processed by different threads.
-                } else {
-                    continue;
-                }
+            } else { // This is an existing socket, ad the file desciptor to the queue to be processed.
+                    requests_queue->addToFdQueue(fd); 
+                    std::cout << "[LOGS] Addedd file descriptor: " << fd << " to fd queue." << '\n';
             }
         }
     } 
@@ -205,7 +210,6 @@ void cerberus::TcpListener::createEpollInstance()
 
 int cerberus::TcpListener::setNonBlocking(const int fd) 
 {
-
     int flags = fcntl(fd, F_GETFL, 0); 
     if (flags == -1) {
         std::cerr << "[ERROR] Error getting the file access mode and status flags.";
@@ -220,13 +224,13 @@ int cerberus::TcpListener::setNonBlocking(const int fd)
     return 0;
 }
 
-std::string cerberus::TcpListener::readData(const int fd)
+std::string cerberus::TcpListener::readData(const int fd, const sockaddr_storage& recieved_connection, parser_map& map)
 {
     // Read in the incoming request data.
     char ip_address[INET6_ADDRSTRLEN];
     socklen_t request_size = sizeof(ip_address);
 
-    inet_ntop(_received_connection.ss_family, getAddressFamily(&_received_connection), ip_address, request_size);
+    inet_ntop(recieved_connection.ss_family, getAddressFamily(&recieved_connection), ip_address, request_size);
     // std::cout << "[SERVER] IP address: " << ip_address << '\n';
 
     // buffer to read the data into.
@@ -244,17 +248,13 @@ std::string cerberus::TcpListener::readData(const int fd)
 
         // Check if the client disconnects.
         if (nread == 0) {
-            _parsers.erase(fd);
+            map.erase(fd);
             break;
         }
 
         data.append(buffer, nread);             
-
-//        std::cout << "data recieved: " << '\n';
-//        std::cout << "-------------DATA---------------" << '\n';
-//        std::cout << data;
-//        std::cout << "--------------------------------" << '\n';
     }
+
     return data;
 }
 
@@ -267,10 +267,16 @@ void cerberus::TcpListener::parseHttpRequest(cerberus::HttpParser* parser)
     parser->parseHeaders();
 }
 
-void cerberus::TcpListener::sendResponse(const int& fd) 
+// TODO: Add parameter that will take in the response string.
+void cerberus::TcpListener::sendResponse(const int& fd, const Request& req) 
 {
+    cerberus::Response response(req);
+    response.constructResponse();
+
+    std::string message = response.getResponse();
+   
     // std::string message = "HTTP/1.1 200 OK\r\nContent-Length: 30\r\nConnection: close\r\n\r\n[SERVER] This is the response!";
-    std::string message = "HTTP/1.1 200 OK\r\nContent-Length: 30\r\n\r\n[SERVER] This is the test response.";
+    // std::string message = "HTTP/1.1 200 OK\r\nContent-Length: 30\r\n\r\n[SERVER] This is the test response.";
 
     std::size_t bytes_sent = send(fd, message.data(), message.size(), 0);
 

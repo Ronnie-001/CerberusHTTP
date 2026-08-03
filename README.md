@@ -37,7 +37,7 @@ Client ──► TCP Listener (epoll) ──► Thread Pool ──► HTTP Parse
 
 ## Supported HTTP Methods
 
-GET, PUT, POST, DELETE, PATCH, OPTIONS, HEAD, CONNECT, TRACE
+GET, PUT, POST, DELETE.
 
 ## Dependencies
 

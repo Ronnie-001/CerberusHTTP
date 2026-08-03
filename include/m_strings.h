@@ -5,12 +5,12 @@
 
 namespace cerberus
 {
-    namespace string 
-    {
-        int caseInsensitiveSearch(const std::string& str1, const std::string& str2);
+namespace string 
+{
+    int caseInsensitiveSearch(const std::string& str1, const std::string& str2);
 
-        void printRawCharacters(const std::string& str);
-    }
+    void printRawCharacters(const std::string& str);
+}
 }
 
 #endif // !M_STRINGS_H

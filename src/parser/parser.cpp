@@ -1,7 +1,9 @@
+#include <ios>
 #include <ostream>
 #include <sstream>
 #include <string>
 #include <vector>
+#include "constants.h"
 #include "m_strings.h"
 
 #include "parser.h"
@@ -18,6 +20,8 @@ cerberus::HttpParser::~HttpParser() { close(_conn_fd); }
 
 bool cerberus::HttpParser::isRequestComplete() 
 {
+    std::cout << "in the isRequestComplete() method" << '\n';
+
     // Check if the recieved HTTP request has a message body
     int header = cerberus::string::caseInsensitiveSearch(_request, "content-length");
     int crlf = _request.find("\r\n\r\n");
@@ -26,8 +30,11 @@ bool cerberus::HttpParser::isRequestComplete()
     if (header == std::string::npos && crlf != std::string::npos) {
         _complete = true;
     } 
-
+    
+    // If there is a message body
     if (header != std::string::npos && crlf != std::string::npos) {
+        std::cout << "Checking if there is a message body!" << '\n';
+
         // grab the substring of the request, starting from \r\n\r\n,
         // then compare this to the content length.
         std::string message_body = _request.substr(crlf + 4);
@@ -38,10 +45,16 @@ bool cerberus::HttpParser::isRequestComplete()
 
         int number_of_bytes = std::stoi(number_of_bytes_str);
 
+        std::cout << "number of bytes: " << number_of_bytes << '\n';
+        std::cout << "message body length: " << message_body.length() << '\n';
+
         if (number_of_bytes == message_body.length()) {
             _complete = true;
         }
     }
+        
+    std::cout << std::boolalpha;
+    std::cout << _complete << '\n';
 
     return _complete;
 }
@@ -50,6 +63,7 @@ std::string cerberus::HttpParser::getMethod() const { return _method; }
 std::string cerberus::HttpParser::getResourcePath() const { return _resource_path; }
 std::string cerberus::HttpParser::getVersion() const { return _version; }
 std::string cerberus::HttpParser::getRequest() const { return _request; }
+cerberus::Request cerberus::HttpParser::getCompletedRequest() const { return _parsed_request; }
 
 void cerberus::HttpParser::appendData(const char* buffer, int bytes)
 {
@@ -85,6 +99,13 @@ void cerberus::HttpParser::parseStartLine()
     _method = v[0];
     _resource_path = v[1];
     _version = v[2];
+}
+
+void cerberus::HttpParser::parseResourcePath() 
+{
+    // TODO: Make use of '/' as the delimiter, grab the value at
+    // index 0 and set that to be the resource, then reconstruc the 
+    // resource path.
 }
 
 void cerberus::HttpParser::extractHeaders()
@@ -171,8 +192,8 @@ void cerberus::HttpParser::parseMessageBody()
 std::ostream& operator<<(std::ostream& out, const cerberus::Request& request) 
 {
     out << "------------START LINE--------" << '\n';
-    out << "METHOD: " << request.method << '\n';
-    out << "RESOURCE PATH: " << request.resourcePath << '\n';
+    out << "METHOD: " << cerberus::getHttpMethodString(request.method) << '\n';
+    out << "RESOURCE PATH: " << request.resource_path << '\n';
     out << "VERSION: " << request.version << '\n';
     
     // Create a lambda for printing out the headers
@@ -203,8 +224,11 @@ cerberus::Request cerberus::HttpParser::constructRequest()
     Request req;
 
     // init member variables 
-    req.method = _method;
-    req.resourcePath = _resource_path;
+    if (_method == "PUT") std::cout << "YESSSS" << '\n';
+    if (getHttpMethod("PUT") == cerberus::HttpMethod::PUT) std::cout << "YESSSS x2" << '\n';
+
+    req.method = getHttpMethod(_method);
+    req.resource_path = _resource_path;
     req.version = _version;
 
     req.headers = _headers;

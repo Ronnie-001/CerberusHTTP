@@ -14,7 +14,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_subdirectory(src/server)
 add_subdirectory(src/parser)
 add_subdirectory(src/thread_pool)
+add_subdirectory(src/router)
 add_subdirectory(src/utility)
+add_subdirectory(src/response)
+
 
 add_executable(Server main.cpp)
 
@@ -22,5 +25,7 @@ target_link_libraries(Server
     PRIVATE cerberus_server 
             cerberus_parser
             cerberus_thread_pool
+            cerberus_router
             cerberus_utility
+            cerberus_response
 )
