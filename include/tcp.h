@@ -5,7 +5,6 @@
 #include <nlohmann/json.hpp>
 #include <memory>
 #include <netdb.h>
-#include <optional>
 #include <sys/epoll.h>
 #include <sys/socket.h>
 #include <unordered_map>
