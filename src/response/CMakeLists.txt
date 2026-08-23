@@ -5,6 +5,6 @@ add_library(cerberus_response
     STATIC response.cpp
 )
 
-target_include_directories(cerberus_server
+target_include_directories(cerberus_response
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )

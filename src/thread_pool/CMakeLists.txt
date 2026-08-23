@@ -5,6 +5,6 @@ add_library(cerberus_thread_pool
     STATIC task_queue.cpp
 )
 
-target_include_directories(cerberus_server
+target_include_directories(cerberus_thread_pool
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )

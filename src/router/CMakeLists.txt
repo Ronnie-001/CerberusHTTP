@@ -6,6 +6,6 @@ add_library(cerberus_router
            data.cpp
 )
 
-target_include_directories(cerberus_server
+target_include_directories(cerberus_router
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )
